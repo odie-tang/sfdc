@@ -398,7 +398,8 @@ public virtual class Tiger {
     * The override is needed when the trigger context need more information from DB to drive the logic.
     * 
     * Example: [SELECT Account.Name, Account.Website, FirstName, LastName, (SELECT CaseNumber FROM Cases) FROM Contact where Id in: ids]
-    * Note: while using the chid relational SOQL query as the above, if there are a mass number of children (e.g. 5000) for each record, the child relational SOQL query should be avoided.
+    * Note: while using the chid relational SOQL query as the above, if there are a mass number of children (e.g. 1000 on average) for each record, 
+    *       the child relational SOQL query should be alternated with more efficient approaches such as Aggregate SOQL.
     */
     protected virtual SObject[] detailize(Set<Id> ids){
 
