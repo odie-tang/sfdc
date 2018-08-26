@@ -38,7 +38,6 @@
 public virtual class Tiger {
 
     private static Map<String, Integer> sObjectTriggerCounterMap = new Map<String, Integer>();
-    private static Map<String, Tiger> sObjectTriggerMap = new Map<String, Tiger>();
     
     private static Map<String, List<String>> actions = new Map<String, List<String>>();
     private static Map<String, List<BeforeInsert>> biActions = new Map<String, List<BeforeInsert>>();
@@ -62,7 +61,7 @@ public virtual class Tiger {
 
     public Tiger(){
         
-        sObjectTriggerMap.put(getSObjectName(), this);
+        addTriggerCount();
     }
 
     public interface BeforeInsert{
@@ -318,8 +317,12 @@ public virtual class Tiger {
             audAction.handleAud(recordsInScope);
     }
 
+    public Integer getTriggerLevel(){
 
-    public static void addTriggerCount(){
+        return sObjectTriggerCounterMap.get(getSObjectName());
+    }
+
+    private static void addTriggerCount(){
 
         String sObjectName = getSObjectName();
 

@@ -32,15 +32,15 @@
     [
         "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default",
         {
-            "state": "u",
             "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default",
             "isDirectory": true,
-            "isMetadataFile": false,
             "size": 0,
             "modifiedTime": 1535207226140,
             "changeTime": 1535207226140,
-            "isWorkspace": false,
-            "contentHash": "4bc531c6f3621ba14f3355488720de8170b798be"
+            "contentHash": "4bc531c6f3621ba14f3355488720de8170b798be",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false
         }
     ],
     [
@@ -76,16 +76,15 @@
     [
         "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Tiger.cls",
         {
+            "state": "u",
             "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Tiger.cls",
             "isDirectory": false,
-            "size": 12818,
-            "modifiedTime": 1535167755977,
-            "changeTime": 1535167755977,
-            "contentHash": "09c140b3af3e7ab0da44e824b626451e1b3a9f6e",
             "isMetadataFile": false,
-            "state": "u",
+            "size": 14663,
+            "modifiedTime": 1535254160976,
+            "changeTime": 1535254160976,
             "isWorkspace": false,
-            "isArtifactRoot": false
+            "contentHash": "a960378c724973b6186e89a8c7d5d3fa122adb7a"
         }
     ],
     [
