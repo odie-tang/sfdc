@@ -24,8 +24,19 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 
+/**
+* This is an enterprise trigger base that manages the DML actions in a scalable, efficient, flexible and simple way.
+* Tiger is a short name of Trigger. Note: this is not so-called "pattern" - TriggerHandler
+* Advantages: 
+*   1.Each DML action can be self sufficient and independent of each other, which simply scales
+*   2.It is possible to avoid most of the DB queries by caching the records returned by @detailize method at the transaction level
+*   3.The sequence of execution can be defined, and defined at the metadata level - @TriggerActions__mdt
+*   4.The trigger actions can be grouped by sObjects, and then Applications:
+*     e.g. if the Account sObject is shared by 3 Apps - Sales, Service & Market, the actions for each App can be grouped into a single record of TriggerActions__mdt. 
+*     e.g. if a global company uses the Account in its Sales App, and different regions/countries have their own business processes, the region wise trigger actions can be grouped into the same metadata record. 
+*/
 public virtual class Tiger {
-    
+
     private static Map<String, Integer> sObjectTriggerCounterMap = new Map<String, Integer>();
     private static Map<String, Tiger> sObjectTriggerMap = new Map<String, Tiger>();
     
@@ -38,12 +49,15 @@ public virtual class Tiger {
     private static Map<String, List<AfterDelete>> adActions = new Map<String, List<AfterDelete>>();
     private static Map<String, List<AfterUndelete>> audActions = new Map<String, List<AfterUndelete>>();
 
-    /**transaction wise cache of records from DB possibly with parent and child relationships fetched thru each individual trigger's detailize method*/
+    /**
+    * transaction wise cache of records from DB possibly with parent and child relationships fetched 
+    * thru each individual trigger's @detailize method
+    */
     private static Map<Id, SObject> cache = new Map<Id, SObject>();
 
     static{
 
-        fetchAllTriggerActionsMeta();
+        fetchAllTriggerActionsMdt();
     }
 
     public Tiger(){
@@ -82,11 +96,19 @@ public virtual class Tiger {
         void handleAud(SObject[] recordsInScope);
     }
 
+    /**
+    * The trigger actions metadata are fetched once and are grouped by sObject names, and then are cached by Salesforce ever since;
+    * The actions will not be initilized until their sObject's trigger is executed;
+    * It loads maximum 50000 records of TriggerActions__mdt, which is a Salesforce governor limit of custom metadata.
+    * 
+    * A little bit explaination about the TriggerActions__mdt:
+    * The @MasterLabel defines the sObject Name. One sObject may have multiple entries of TriggerActions__mdt; 
+    * The @DeveloperName is unique, and used for ordering the sequence of executions for a specific sObject defined in @MasterLabel;
+    * The @Actions__c is a list of trigger actions that is split by new line character '\\n'; the actions will be executed in the same order as in the @Actions__c field
+    */
+    private static void fetchAllTriggerActionsMdt(){
 
-    private static void fetchAllTriggerActionsMeta(){
-
-
-        TriggerActions__mdt[] triggerActions = [select MasterLabel, DeveloperName, Actions__c from TriggerActions__mdt where Active__c=true order by MasterLabel, DeveloperName limit 500];
+        TriggerActions__mdt[] triggerActions = [select MasterLabel, DeveloperName, Actions__c from TriggerActions__mdt where Active__c=true order by MasterLabel, DeveloperName limit 50000];
 
         for(TriggerActions__mdt tas : triggerActions){
 
