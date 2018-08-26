@@ -390,12 +390,15 @@ public virtual class Tiger {
 
     
     /**
-    * Perform a single query to get all the relevant information including parent's fields and the related lists against the trigger.new
-    *, so that multiple queries can be avoided from different logic; 
-    * use a map to avoid the conflicts between multiple inheritences on different objects;
-    * this method should only be overridden once by the root trigger handler of a speicific object;
-    * by default, it is getting the records from trigger.old; 
-    * the override is needed when the trigger context need more information from DB to drive the logic.
+    * It is meant to perform a single query to get all the relevant information including parent's fields and the related lists against the trigger.new
+    *, so that multiple queries can be avoided and cached records can be shared across the transaction ever since; 
+    *
+    * This method should only be overridden once by the root trigger handler of a speicific object;
+    * By default, it is getting the records from trigger.old without additional query 
+    * The override is needed when the trigger context need more information from DB to drive the logic.
+    * 
+    * Example: [SELECT Account.Name, Account.Website, FirstName, LastName, (SELECT CaseNumber FROM Cases) FROM Contact where Id in: ids]
+    * Note: while using the chid relational SOQL query as the above, if there are a mass number of children (e.g. 5000) for each record, the child relational SOQL query should be avoided.
     */
     protected virtual SObject[] detailize(Set<Id> ids){
 
