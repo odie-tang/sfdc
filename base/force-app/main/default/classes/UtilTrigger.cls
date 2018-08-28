@@ -30,7 +30,7 @@ public class UtilTrigger {
         SObject newRecord = Trigger.newMap.get(record.Id);
 
 		SObject oldRecord = Trigger.oldMap.get(record.Id);
-
+        
         for(String fieldName : fieldNames){
 
             if(newRecord.get(fieldName) != oldRecord.get(fieldName)){
@@ -42,7 +42,7 @@ public class UtilTrigger {
 	}
 
 	public static Boolean fieldChanged(SObject record, String fieldName){
-
+        
         SObject newRecord = Trigger.newMap.get(record.Id);
 
 		SObject recordOld = Trigger.oldMap.get(record.Id);
@@ -53,24 +53,24 @@ public class UtilTrigger {
 	public static Boolean fieldChanged(SObject record, String fieldName, Object oldValue, Object newValue){
         
         SObject newRecord = Trigger.newMap.get(record.Id);
-
+        
         SObject oldRecord = Trigger.oldMap.get(record.Id);
 			
 		return  oldRecord.get(fieldName) == oldValue && newRecord.get(fieldName) == newValue;
 	}
 	
 	public static Boolean fieldChanged(SObject record, String fieldName, Object newValue){
-		
+        
         SObject newRecord = Trigger.newMap.get(record.Id);
-
-		SObject oldRecord = Trigger.oldMap.get(record.Id);
+        
+        SObject oldRecord = Trigger.oldMap.get(record.Id);
 			
 		return  oldRecord.get(fieldName) != newValue 
                 && newRecord.get(fieldName) == newValue;
 	}
 		
 	public static Boolean fieldChangedAmongNews(SObject record, String fieldName, Object[] newValues){
-		
+        
         SObject newRecord = Trigger.newMap.get(record.Id);
         
         SObject oldRecord = Trigger.oldMap.get(record.Id);
@@ -89,7 +89,7 @@ public class UtilTrigger {
 	}
 	
 	public static String sObjectName(){
-
+        
         SObject[] records = trigger.old == null ? trigger.new : trigger.old;
 
 		return records.getSObjectType().getDescribe().getName();

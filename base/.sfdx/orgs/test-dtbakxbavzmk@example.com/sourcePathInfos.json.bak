@@ -61,29 +61,29 @@
     [
         "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes",
         {
-            "state": "u",
             "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes",
             "isDirectory": true,
-            "isMetadataFile": false,
             "size": 0,
             "modifiedTime": 1535420846765,
             "changeTime": 1535420846765,
-            "isWorkspace": false,
-            "contentHash": "aae471cd29255f3ab247ac6448359ddde5101c2a"
+            "contentHash": "aae471cd29255f3ab247ac6448359ddde5101c2a",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false
         }
     ],
     [
         "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Tiger.cls",
         {
+            "state": "u",
             "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Tiger.cls",
             "isDirectory": false,
-            "size": 15070,
-            "modifiedTime": 1535417934128,
-            "changeTime": 1535417934128,
-            "contentHash": "b0b2e79f5351ddcea2c4f86de64374325e7a16e2",
             "isMetadataFile": false,
-            "state": "u",
-            "isWorkspace": false
+            "size": 15083,
+            "modifiedTime": 1535422607696,
+            "changeTime": 1535422607696,
+            "isWorkspace": false,
+            "contentHash": "ace9f4b76412eef696f23e6abda7224c5449d5df"
         }
     ],
     [
@@ -223,27 +223,27 @@
     [
         "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilTrigger.cls",
         {
-            "state": "u",
             "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilTrigger.cls",
             "isDirectory": false,
-            "isMetadataFile": false,
             "size": 3595,
             "modifiedTime": 1535421992150,
             "changeTime": 1535421992150,
-            "contentHash": "3caf0d0afce5f66bbec08066027fe0564a77a724"
+            "contentHash": "3caf0d0afce5f66bbec08066027fe0564a77a724",
+            "isMetadataFile": false,
+            "state": "u"
         }
     ],
     [
         "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilTrigger.cls-meta.xml",
         {
-            "state": "u",
             "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilTrigger.cls-meta.xml",
             "isDirectory": false,
-            "isMetadataFile": true,
             "size": 189,
             "modifiedTime": 1535420846767,
             "changeTime": 1535420846767,
-            "contentHash": "7d53bb5a57a7360dcda17b07c37115dc9034c0fb"
+            "contentHash": "7d53bb5a57a7360dcda17b07c37115dc9034c0fb",
+            "isMetadataFile": true,
+            "state": "u"
         }
     ]
 ]
