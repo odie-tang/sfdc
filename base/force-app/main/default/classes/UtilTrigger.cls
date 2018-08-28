@@ -25,73 +25,73 @@
  **/
 public class UtilTrigger {
 
-public static Boolean anyFieldChanged(SObject record, String[] fieldNames){
+    public static Boolean anyFieldChanged(SObject record, String[] fieldNames){
 
-	SObject newRecord = Trigger.newMap.get(record.Id);
+        SObject newRecord = Trigger.newMap.get(record.Id);
 
-	SObject oldRecord = Trigger.oldMap.get(record.Id);
+        SObject oldRecord = Trigger.oldMap.get(record.Id);
 
-	for(String fieldName : fieldNames) {
+        for(String fieldName : fieldNames) {
 
-		if(newRecord.get(fieldName) != oldRecord.get(fieldName)) {
-			return true;
-		}
-	}
+            if(newRecord.get(fieldName) != oldRecord.get(fieldName)) {
+                return true;
+            }
+        }
 
-	return false;
-}
+        return false;
+    }
 
-public static Boolean fieldChanged(SObject record, String fieldName){
+    public static Boolean fieldChanged(SObject record, String fieldName){
 
-	SObject newRecord = Trigger.newMap.get(record.Id);
+        SObject newRecord = Trigger.newMap.get(record.Id);
 
-	SObject recordOld = Trigger.oldMap.get(record.Id);
+        SObject recordOld = Trigger.oldMap.get(record.Id);
 
-	return newRecord.get(fieldName) != recordOld.get(fieldName);
-}
+        return newRecord.get(fieldName) != recordOld.get(fieldName);
+    }
 
-public static Boolean fieldChanged(SObject record, String fieldName, Object oldValue, Object newValue){
+    public static Boolean fieldChanged(SObject record, String fieldName, Object oldValue, Object newValue){
 
-	SObject newRecord = Trigger.newMap.get(record.Id);
+        SObject newRecord = Trigger.newMap.get(record.Id);
 
-	SObject oldRecord = Trigger.oldMap.get(record.Id);
+        SObject oldRecord = Trigger.oldMap.get(record.Id);
 
-	return oldRecord.get(fieldName) == oldValue && newRecord.get(fieldName) == newValue;
-}
+        return oldRecord.get(fieldName) == oldValue && newRecord.get(fieldName) == newValue;
+    }
 
-public static Boolean fieldChanged(SObject record, String fieldName, Object newValue){
+    public static Boolean fieldChanged(SObject record, String fieldName, Object newValue){
 
-	SObject newRecord = Trigger.newMap.get(record.Id);
+        SObject newRecord = Trigger.newMap.get(record.Id);
 
-	SObject oldRecord = Trigger.oldMap.get(record.Id);
+        SObject oldRecord = Trigger.oldMap.get(record.Id);
 
-	return oldRecord.get(fieldName) != newValue
-	       && newRecord.get(fieldName) == newValue;
-}
+        return oldRecord.get(fieldName) != newValue
+            && newRecord.get(fieldName) == newValue;
+    }
 
-public static Boolean fieldChangedAmongNews(SObject record, String fieldName, Object[] newValues){
+    public static Boolean fieldChangedAmongNews(SObject record, String fieldName, Object[] newValues){
 
-	SObject newRecord = Trigger.newMap.get(record.Id);
+        SObject newRecord = Trigger.newMap.get(record.Id);
 
-	SObject oldRecord = Trigger.oldMap.get(record.Id);
+        SObject oldRecord = Trigger.oldMap.get(record.Id);
 
-	if(oldRecord.get(fieldName) != newRecord.get(fieldName)) {
+        if(oldRecord.get(fieldName) != newRecord.get(fieldName)) {
 
-		for(Object value : newValues) {
+            for(Object value : newValues) {
 
-			if(newRecord.get(fieldName) == value) {
-				return true;
-			}
-		}
-	}
+                if(newRecord.get(fieldName) == value) {
+                    return true;
+                }
+            }
+        }
 
-	return false;
-}
+        return false;
+    }
 
-public static String sObjectName(){
+    public static String sObjectName(){
 
-	SObject[] records = trigger.old == null ? trigger.new : trigger.old;
+        SObject[] records = trigger.old == null ? trigger.new : trigger.old;
 
-	return records.getSObjectType().getDescribe().getName();
-}
+        return records.getSObjectType().getDescribe().getName();
+    }
 }
