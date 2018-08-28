@@ -26,7 +26,8 @@
 public class UtilTrigger {
 
 	public static Boolean anyFieldChanged(SObject record, String[] fieldNames){
-		SObject newRecord = Trigger.newMap.get(record.Id);
+		
+        SObject newRecord = Trigger.newMap.get(record.Id);
 
 		SObject oldRecord = Trigger.oldMap.get(record.Id);
         
