@@ -346,7 +346,7 @@ public virtual class Tiger {
     /**
     * Flyweight: only load the uncached records within the scope of trigger
     */
-    public SObject[] detailizeScopeFromDb(){
+    private SObject[] detailizeScopeFromDb(){
         
         List<SObject> scope = trigger.old == null ? trigger.new : trigger.old;
 
@@ -390,11 +390,10 @@ public virtual class Tiger {
 
     
     /**
-    * It is meant to perform a single query to get all the relevant information including parent's fields and the related lists against the trigger.new
-    *, so that multiple queries can be avoided and cached records can be shared across the transaction ever since; 
+    * It is meant to perform a super query as needed to get all the relevant information including parent's fields and the related child records against the trigger's scope,
+    * and then cache the results for the transaction, so that multiple queries can be avoided; 
     *
-    * This method should only be overridden once by the root trigger handler of a speicific object;
-    * By default, it is getting the records from trigger.old without additional query 
+    * By default, it is getting the records from @Trigger.old, or a blank list when @Trigger.old is null(insert & undelete events), without additional query 
     * The override is needed when the trigger context need more information from DB to drive the logic.
     * 
     * Example: [SELECT Account.Name, Account.Website, FirstName, LastName, (SELECT CaseNumber FROM Cases) FROM Contact where Id in: ids]
@@ -403,7 +402,7 @@ public virtual class Tiger {
     */
     protected virtual SObject[] detailize(Set<Id> ids){
 
-        return trigger.old;
+        return Trigger.old != null ? Trigger.old : new SObject[]{};
     }
 
     public static SObject getDbRecord(Id id){
