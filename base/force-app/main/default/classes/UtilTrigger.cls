@@ -22,76 +22,76 @@
  *  OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  *  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-**/
+ **/
 public class UtilTrigger {
 
-	public static Boolean anyFieldChanged(SObject record, String[] fieldNames){
-		
-        SObject newRecord = Trigger.newMap.get(record.Id);
+public static Boolean anyFieldChanged(SObject record, String[] fieldNames){
 
-		SObject oldRecord = Trigger.oldMap.get(record.Id);
-        
-        for(String fieldName : fieldNames){
+	SObject newRecord = Trigger.newMap.get(record.Id);
 
-            if(newRecord.get(fieldName) != oldRecord.get(fieldName)){
-                return true;
-            }
-        }
-    
-		return false;
+	SObject oldRecord = Trigger.oldMap.get(record.Id);
+
+	for(String fieldName : fieldNames) {
+
+		if(newRecord.get(fieldName) != oldRecord.get(fieldName)) {
+			return true;
+		}
 	}
 
-	public static Boolean fieldChanged(SObject record, String fieldName){
-        
-        SObject newRecord = Trigger.newMap.get(record.Id);
+	return false;
+}
 
-		SObject recordOld = Trigger.oldMap.get(record.Id);
+public static Boolean fieldChanged(SObject record, String fieldName){
 
-		return  newRecord.get(fieldName) != recordOld.get(fieldName);
+	SObject newRecord = Trigger.newMap.get(record.Id);
+
+	SObject recordOld = Trigger.oldMap.get(record.Id);
+
+	return newRecord.get(fieldName) != recordOld.get(fieldName);
+}
+
+public static Boolean fieldChanged(SObject record, String fieldName, Object oldValue, Object newValue){
+
+	SObject newRecord = Trigger.newMap.get(record.Id);
+
+	SObject oldRecord = Trigger.oldMap.get(record.Id);
+
+	return oldRecord.get(fieldName) == oldValue && newRecord.get(fieldName) == newValue;
+}
+
+public static Boolean fieldChanged(SObject record, String fieldName, Object newValue){
+
+	SObject newRecord = Trigger.newMap.get(record.Id);
+
+	SObject oldRecord = Trigger.oldMap.get(record.Id);
+
+	return oldRecord.get(fieldName) != newValue
+	       && newRecord.get(fieldName) == newValue;
+}
+
+public static Boolean fieldChangedAmongNews(SObject record, String fieldName, Object[] newValues){
+
+	SObject newRecord = Trigger.newMap.get(record.Id);
+
+	SObject oldRecord = Trigger.oldMap.get(record.Id);
+
+	if(oldRecord.get(fieldName) != newRecord.get(fieldName)) {
+
+		for(Object value : newValues) {
+
+			if(newRecord.get(fieldName) == value) {
+				return true;
+			}
+		}
 	}
 
-	public static Boolean fieldChanged(SObject record, String fieldName, Object oldValue, Object newValue){
-        
-        SObject newRecord = Trigger.newMap.get(record.Id);
-        
-        SObject oldRecord = Trigger.oldMap.get(record.Id);
-			
-		return  oldRecord.get(fieldName) == oldValue && newRecord.get(fieldName) == newValue;
-	}
-	
-	public static Boolean fieldChanged(SObject record, String fieldName, Object newValue){
-        
-        SObject newRecord = Trigger.newMap.get(record.Id);
-        
-        SObject oldRecord = Trigger.oldMap.get(record.Id);
-			
-		return  oldRecord.get(fieldName) != newValue 
-                && newRecord.get(fieldName) == newValue;
-	}
-		
-	public static Boolean fieldChangedAmongNews(SObject record, String fieldName, Object[] newValues){
-        
-        SObject newRecord = Trigger.newMap.get(record.Id);
-        
-        SObject oldRecord = Trigger.oldMap.get(record.Id);
+	return false;
+}
 
-        if(oldRecord.get(fieldName) != newRecord.get(fieldName)){
+public static String sObjectName(){
 
-            for(Object value : newValues){
+	SObject[] records = trigger.old == null ? trigger.new : trigger.old;
 
-                if(newRecord.get(fieldName) == value){
-                    return true;
-                }
-            }
-        }
-
-        return false;
-	}
-	
-	public static String sObjectName(){
-        
-        SObject[] records = trigger.old == null ? trigger.new : trigger.old;
-
-		return records.getSObjectType().getDescribe().getName();
-	}
+	return records.getSObjectType().getDescribe().getName();
+}
 }
