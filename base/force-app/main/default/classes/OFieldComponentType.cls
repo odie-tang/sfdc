@@ -1,3 +1,0 @@
-global enum OFieldComponentType {
-	TEXT,PICKLIST,MULTIPICKLIST,CALENDER,POPUP
-}

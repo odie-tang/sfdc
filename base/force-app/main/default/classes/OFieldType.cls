@@ -24,8 +24,12 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 public abstract class OFieldType {
+	
+	public enum HtmlInputType {
+		TEXT,PICKLIST,MULTIPICKLIST,CALENDER,POPUP
+	}
 
-	public abstract OFieldComponentType defaultOFieldComponentType();
+	public abstract HtmlInputType defaultHtmlInputType();
 	public abstract String[] getSupportedSearchingOperators();
 	public abstract Object getFieldValue(String fieldValueInString);
 	public abstract String getFieldValueInSoqlCondition(Object fieldValue);
@@ -115,7 +119,7 @@ public abstract class OFieldType {
 	
 	
 	public class OAnyType extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
+		public override HtmlInputType defaultHtmlInputType(){
 			throw new ApplicationException();
 		}
 		public override String[] getSupportedSearchingOperators(){
@@ -137,7 +141,7 @@ public abstract class OFieldType {
 	
 	
 	public class OBase64 extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
+		public override HtmlInputType defaultHtmlInputType(){
 			throw new ApplicationException();
 		}
 		public override String[] getSupportedSearchingOperators(){
@@ -159,8 +163,8 @@ public abstract class OFieldType {
 	
 	
 	public class OBoolean extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'equals','not equal to'};
@@ -184,8 +188,8 @@ public abstract class OFieldType {
 	
 	
 	public class OCombobox extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.PICKLIST;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.PICKLIST;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'equals','not equal to','starts with','ends with','contains','does not contain','includes', 'excludes'};
@@ -212,8 +216,8 @@ public abstract class OFieldType {
 	
 	
 	public class OCurrency extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'greater than','less than','less or equal','greater or equal', 'equals','not equal to'};
@@ -236,7 +240,7 @@ public abstract class OFieldType {
 	}
 	
 	public class ODataCategoryGroupReference extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
+		public override HtmlInputType defaultHtmlInputType(){
 			throw new ApplicationException();
 		}
 		public override String[] getSupportedSearchingOperators(){
@@ -258,8 +262,8 @@ public abstract class OFieldType {
 	
 	
 	public class ODate extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.CALENDER;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.CALENDER;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'equals','not equal to','less than','greater than','less or equal','greater or equal'};
@@ -282,8 +286,8 @@ public abstract class OFieldType {
 	}
 	
 	public class ODateTime extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.CALENDER;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.CALENDER;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			throw new ApplicationException();
@@ -307,8 +311,8 @@ public abstract class OFieldType {
 	
 	
 	public class ODouble extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'less than','greater than','less or equal','greater or equal', 'includes', 'excludes','equals','not equal to'};
@@ -332,8 +336,8 @@ public abstract class OFieldType {
 	
 	
 	public class OEmail extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'equals','not equal to','starts with','ends with','contains','does not contain','includes', 'excludes'};
@@ -360,7 +364,7 @@ public abstract class OFieldType {
 	
 	
 	public class OEncryptedString extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
+		public override HtmlInputType defaultHtmlInputType(){
 			throw new ApplicationException();
 		}
 		public override String[] getSupportedSearchingOperators(){
@@ -385,8 +389,8 @@ public abstract class OFieldType {
 	
 	
 	public class OId extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.POPUP;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.POPUP;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'includes', 'excludes','equals','not equal to','less than','greater than','less or equal','greater or equal'};
@@ -413,8 +417,8 @@ public abstract class OFieldType {
 	
 	
 	public class OInteger extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'less than','greater than','less or equal','greater or equal','includes', 'excludes','equals','not equal to'};
@@ -437,8 +441,8 @@ public abstract class OFieldType {
 	}
 	
 	public class OMultiPicklist extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.PICKLIST;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.PICKLIST;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'includes', 'excludes','equals','not equal to'};
@@ -465,8 +469,8 @@ public abstract class OFieldType {
 	
 	
 	public class OPercent extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'includes', 'excludes','equals','not equal to'};
@@ -489,8 +493,8 @@ public abstract class OFieldType {
 	}
 	
 	public class OPhone extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'equals','not equal to','starts with','ends with','contains','does not contain','less than','greater than','less or equal','greater or equal', 'includes', 'excludes'};
@@ -517,8 +521,8 @@ public abstract class OFieldType {
 	
 	
 	public class OPicklist extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'includes', 'excludes','equals','not equal to'};
@@ -546,8 +550,8 @@ public abstract class OFieldType {
 	
 	
 	public class OReference extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.POPUP;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.POPUP;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'includes', 'excludes','equals','not equal to','less than','greater than','less or equal','greater or equal'};
@@ -574,8 +578,8 @@ public abstract class OFieldType {
 	
 	
 	public class OString extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'equals','not equal to','starts with','ends with','contains','does not contain','less than','greater than','less or equal','greater or equal', 'includes', 'excludes'};
@@ -601,8 +605,8 @@ public abstract class OFieldType {
 	}
 	
 	public class OTextArea extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'equals','not equal to','starts with','ends with','contains','does not contain'};
@@ -628,7 +632,7 @@ public abstract class OFieldType {
 	}
 	
 	public class OTime extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
+		public override HtmlInputType defaultHtmlInputType(){
 			throw new ApplicationException();
 		}
 		public override String[] getSupportedSearchingOperators(){
@@ -649,8 +653,8 @@ public abstract class OFieldType {
 	}
 	
 	public class OUrl extends OFieldType{
-		public override OFieldComponentType defaultOFieldComponentType(){
-			return OFieldComponentType.TEXT;
+		public override HtmlInputType defaultHtmlInputType(){
+			return HtmlInputType.TEXT;
 		}
 		public override String[] getSupportedSearchingOperators(){
 			return new String[]{'contains','does not contain','starts with','ends with','equals','not equal to'};

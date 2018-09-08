@@ -111,11 +111,11 @@
             "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\CascadeQuerier.cls",
             "isDirectory": false,
             "isMetadataFile": false,
-            "size": 11394,
-            "modifiedTime": 1536429438889,
-            "changeTime": 1536429438889,
+            "size": 11432,
+            "modifiedTime": 1536438578014,
+            "changeTime": 1536438578014,
             "isWorkspace": false,
-            "contentHash": "d56a9bd5d293a11b2852272fa233299e6a340a6d"
+            "contentHash": "0c2c04f1a0552fcb42d9320df19fcee4fabc77dd"
         }
     ],
     [
@@ -541,16 +541,15 @@
     [
         "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\OFieldType.cls",
         {
+            "state": "u",
             "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\OFieldType.cls",
             "isDirectory": false,
-            "size": 22882,
-            "modifiedTime": 1536423376841,
-            "changeTime": 1536423376841,
-            "contentHash": "13b5a3b5b678b3614c26ccf5835f767aeb76168b",
             "isMetadataFile": false,
-            "state": "u",
+            "size": 22587,
+            "modifiedTime": 1536439190886,
+            "changeTime": 1536439190886,
             "isWorkspace": false,
-            "isArtifactRoot": false
+            "contentHash": "ec0bb479fd8bfb96e9f30db69386b6ac0fa8b94d"
         }
     ],
     [
