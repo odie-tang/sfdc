@@ -1,0 +1,630 @@
+[
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app",
+            "isDirectory": true,
+            "size": 0,
+            "modifiedTime": 1532246650435,
+            "changeTime": 1532246650435,
+            "contentHash": "b28b7af69320201d1cf206ebf28373980add1451",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": true
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main",
+            "isDirectory": true,
+            "size": 0,
+            "modifiedTime": 1532246650435,
+            "changeTime": 1532246650435,
+            "contentHash": "7505d64a54e061b7acd54ccd58b49dc43500b635",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default",
+            "isDirectory": true,
+            "size": 0,
+            "modifiedTime": 1535207226140,
+            "changeTime": 1535207226140,
+            "contentHash": "4bc531c6f3621ba14f3355488720de8170b798be",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\aura",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\aura",
+            "isDirectory": true,
+            "size": 0,
+            "modifiedTime": 1535164349386,
+            "changeTime": 1535164349386,
+            "contentHash": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes",
+            "isDirectory": true,
+            "size": 0,
+            "modifiedTime": 1536423136200,
+            "changeTime": 1536423136200,
+            "contentHash": "b173adf114c0908b1ac5b81e3898fc71fc8700e5",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\CacheManager.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\CacheManager.cls",
+            "isDirectory": false,
+            "size": 858,
+            "modifiedTime": 1535839311468,
+            "changeTime": 1535839311468,
+            "contentHash": "8107d3e03bc5dc317fa9811d7d4d55248fb52a93",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\CacheManager.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\CacheManager.cls-meta.xml",
+            "isDirectory": false,
+            "size": 190,
+            "modifiedTime": 1535839282177,
+            "changeTime": 1535839282177,
+            "contentHash": "053970f14fd2b1940a9005115491651454129873",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\CascadeQuerier.cls",
+        {
+            "state": "u",
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\CascadeQuerier.cls",
+            "isDirectory": false,
+            "isMetadataFile": false,
+            "size": 11427,
+            "modifiedTime": 1536438231375,
+            "changeTime": 1536438231375,
+            "isWorkspace": false,
+            "contentHash": "192096401cb06920b05a846071f414e3641cda1a"
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\CascadeQuerier.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\CascadeQuerier.cls-meta.xml",
+            "isDirectory": false,
+            "size": 192,
+            "modifiedTime": 1535897414200,
+            "changeTime": 1535897414200,
+            "contentHash": "bba18760d5fe4531ffd2d28e3aeda33888345fc7",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Stack.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Stack.cls",
+            "isDirectory": false,
+            "size": 404,
+            "modifiedTime": 1536286297856,
+            "changeTime": 1536286297856,
+            "contentHash": "b80a62c0eccb28d1df18c16951afc1996b470649",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Stack.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Stack.cls-meta.xml",
+            "isDirectory": false,
+            "size": 183,
+            "modifiedTime": 1536286293065,
+            "changeTime": 1536286293065,
+            "contentHash": "33097c26cd6acca3b039e58b82c1b479551e6d95",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Tiger.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Tiger.cls",
+            "isDirectory": false,
+            "size": 12795,
+            "modifiedTime": 1536423531455,
+            "changeTime": 1536423531455,
+            "contentHash": "9d6de3e561e1bcf8a87d6e95dad8b5ef11bf77ad",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Tiger.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Tiger.cls-meta.xml",
+            "isDirectory": false,
+            "size": 183,
+            "modifiedTime": 1532246714790,
+            "changeTime": 1532246714790,
+            "contentHash": "ac28efa2b0d55fbbdb7c9cf1c1a5cc1e704aa0f3",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilMetadata.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilMetadata.cls",
+            "isDirectory": false,
+            "size": 4562,
+            "modifiedTime": 1535510861871,
+            "changeTime": 1535510861871,
+            "contentHash": "7d869659a330575237c4a9740290d2b24e21a033",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilMetadata.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilMetadata.cls-meta.xml",
+            "isDirectory": false,
+            "size": 190,
+            "modifiedTime": 1535509255274,
+            "changeTime": 1535509255274,
+            "contentHash": "e97562dd1ac9548f0ac2a3973bd3eb8b510a7cbe",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilSObject.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilSObject.cls",
+            "isDirectory": false,
+            "size": 330,
+            "modifiedTime": 1535510404779,
+            "changeTime": 1535510404779,
+            "contentHash": "6678ce092e8327c178d48fb0697bef5efe6e5e57",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilSObject.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilSObject.cls-meta.xml",
+            "isDirectory": false,
+            "size": 189,
+            "modifiedTime": 1535510366943,
+            "changeTime": 1535510366943,
+            "contentHash": "6fcddfbf494f02635d3dd750e547c81121a8688e",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilTrigger.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilTrigger.cls",
+            "isDirectory": false,
+            "size": 4615,
+            "modifiedTime": 1535822266744,
+            "changeTime": 1535822266744,
+            "contentHash": "32734fa1da5192224b4752f219c0c3e5e44e90bc",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilTrigger.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilTrigger.cls-meta.xml",
+            "isDirectory": false,
+            "size": 189,
+            "modifiedTime": 1535420846767,
+            "changeTime": 1535420846767,
+            "contentHash": "7d53bb5a57a7360dcda17b07c37115dc9034c0fb",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects",
+            "isDirectory": true,
+            "size": 0,
+            "modifiedTime": 1535207229119,
+            "changeTime": 1535207229119,
+            "contentHash": "be2703b8cf04948bd689db003550ef0c728ced58",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt",
+            "isDirectory": true,
+            "size": 0,
+            "modifiedTime": 1535207229189,
+            "changeTime": 1535207229189,
+            "contentHash": "c08cc9690d95241e2243a5b11d81f412a6e71b5f",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\fields",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\fields",
+            "isDirectory": true,
+            "size": 0,
+            "modifiedTime": 1535207229173,
+            "changeTime": 1535207229173,
+            "contentHash": "a4d81e1e5220dd1f6fb07dfd2a6fef772f9c7b13",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\fields\\Actions__c.field-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\fields\\Actions__c.field-meta.xml",
+            "isDirectory": false,
+            "size": 371,
+            "modifiedTime": 1535207229170,
+            "changeTime": 1535207229170,
+            "contentHash": "b2bc9cef5e862ca23ca3e8ff1f619e8c9708da10",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\fields\\Active__c.field-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\fields\\Active__c.field-meta.xml",
+            "isDirectory": false,
+            "size": 341,
+            "modifiedTime": 1535207229186,
+            "changeTime": 1535207229186,
+            "contentHash": "f491b80f113e58134e5e74e19d57d73c1e0c41e8",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\listViews",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\listViews",
+            "isDirectory": true,
+            "size": 0,
+            "modifiedTime": 1535207229192,
+            "changeTime": 1535207229192,
+            "contentHash": "0b3931647b535802350a588b8bf16d4ae6cc2ed6",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\listViews\\All.listView-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\listViews\\All.listView-meta.xml",
+            "isDirectory": false,
+            "size": 349,
+            "modifiedTime": 1535207229207,
+            "changeTime": 1535207229207,
+            "contentHash": "1366922a9ce89b890480ddfef7330f55d8fdf7e7",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\TriggerActions__mdt.object-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\objects\\TriggerActions__mdt\\TriggerActions__mdt.object-meta.xml",
+            "isDirectory": false,
+            "size": 234,
+            "modifiedTime": 1535207229142,
+            "changeTime": 1535207229142,
+            "contentHash": "97254db935e1597afb9e97e6c1c4a7a1414593fd",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base",
+            "isDirectory": true,
+            "size": 0,
+            "modifiedTime": 1532246657836,
+            "changeTime": 1532484512904,
+            "contentHash": "829e604d4e7d5aae25f04d899b0bc5eccc598817",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": true,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\ApplicationException.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\ApplicationException.cls",
+            "isDirectory": false,
+            "size": 56,
+            "modifiedTime": 1536415349680,
+            "changeTime": 1536415349680,
+            "contentHash": "da9780c75539bb2262c8e4f0b5a46697d0e4e57e",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\ApplicationException.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\ApplicationException.cls-meta.xml",
+            "isDirectory": false,
+            "size": 198,
+            "modifiedTime": 1536415342716,
+            "changeTime": 1536415342716,
+            "contentHash": "1be18d55bb476d6bce5026b45dbe65d4bb2baab9",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\OFieldComponentType.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\OFieldComponentType.cls",
+            "isDirectory": false,
+            "size": 81,
+            "modifiedTime": 1530936774277,
+            "changeTime": 1530936774277,
+            "contentHash": "9d28c556ca8dfd92756f5305494e9ff1dbada2b7",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\OFieldComponentType.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\OFieldComponentType.cls-meta.xml",
+            "isDirectory": false,
+            "size": 202,
+            "modifiedTime": 1530936774277,
+            "changeTime": 1530936774277,
+            "contentHash": "2e4421aa1f75cd8e99d9e37f9939bb8a0d8dadab",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilCollection.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilCollection.cls",
+            "isDirectory": false,
+            "size": 4978,
+            "modifiedTime": 1536423170557,
+            "changeTime": 1536423170557,
+            "contentHash": "335b944e698ef80a0bdda497abf1395d7ec2a78b",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilCollection.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilCollection.cls-meta.xml",
+            "isDirectory": false,
+            "size": 192,
+            "modifiedTime": 1536423136203,
+            "changeTime": 1536423136203,
+            "contentHash": "5c85b272bf5abaa8a8bf1755b513fe56f1ea1dda",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\FieldIdentifier.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\FieldIdentifier.cls",
+            "isDirectory": false,
+            "size": 5390,
+            "modifiedTime": 1536423421167,
+            "changeTime": 1536423421167,
+            "contentHash": "b74174ded39d4bf647bfbec8e529f2d5132599b8",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\FieldIdentifier.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\FieldIdentifier.cls-meta.xml",
+            "isDirectory": false,
+            "size": 193,
+            "modifiedTime": 1536422745865,
+            "changeTime": 1536422745865,
+            "contentHash": "1cd1f848debc1f718766c39aa2dfb7c8fe44c2b0",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\OFieldType.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\OFieldType.cls",
+            "isDirectory": false,
+            "size": 22882,
+            "modifiedTime": 1536423376841,
+            "changeTime": 1536423376841,
+            "contentHash": "13b5a3b5b678b3614c26ccf5835f767aeb76168b",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\OFieldType.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\OFieldType.cls-meta.xml",
+            "isDirectory": false,
+            "size": 193,
+            "modifiedTime": 1530936774279,
+            "changeTime": 1530936774279,
+            "contentHash": "235e583b3590643c1a2074642eac303f7868d082",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilField.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilField.cls",
+            "isDirectory": false,
+            "size": 6675,
+            "modifiedTime": 1536422916286,
+            "changeTime": 1536422916286,
+            "contentHash": "db644c7966b26cd3327952ea3ebbd141118c99f5",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilField.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilField.cls-meta.xml",
+            "isDirectory": false,
+            "size": 187,
+            "modifiedTime": 1536422658934,
+            "changeTime": 1536422658934,
+            "contentHash": "59fbb0f8741cfb6e3b73afe7b7551c74f62f249e",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilSoql.cls",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilSoql.cls",
+            "isDirectory": false,
+            "size": 2672,
+            "modifiedTime": 1536424252276,
+            "changeTime": 1536424252276,
+            "contentHash": "a3f366254f883f1b00420976bb345c76147e21fe",
+            "isMetadataFile": false,
+            "state": "u",
+            "isWorkspace": false
+        }
+    ],
+    [
+        "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilSoql.cls-meta.xml",
+        {
+            "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\UtilSoql.cls-meta.xml",
+            "isDirectory": false,
+            "size": 186,
+            "modifiedTime": 1536415659598,
+            "changeTime": 1536415659598,
+            "contentHash": "48662dfee383e688ccb5ae5635ba4f0748a5604e",
+            "isMetadataFile": true,
+            "state": "u",
+            "isWorkspace": false,
+            "isArtifactRoot": false
+        }
+    ]
+]

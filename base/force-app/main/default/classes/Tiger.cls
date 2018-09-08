@@ -173,8 +173,6 @@ public virtual class Tiger {
     public void handle(){
 
         initCurrentSObjectTriggerActions();
-
-        detailizeScopeFromDb();
         
         String sObjectName = getSObjectName();
 
@@ -342,72 +340,4 @@ public virtual class Tiger {
 
         return recordsInTrigger.getSObjectType().getDescribe().getName();
     }
-
-    /**
-    * Flyweight: only load the uncached records within the scope of trigger
-    */
-    private SObject[] detailizeScopeFromDb(){
-        
-        List<SObject> scope = trigger.old == null ? trigger.new : trigger.old;
-
-        Set<Id> uncachedIds = getUncachedIds(scope);
-
-        if(!uncachedIds.isEmpty()){
-
-            SObject[] uncachedDetails = detailize(uncachedIds);
-
-            if(uncachedDetails != null)
-                cache.putAll(uncachedDetails);
-        }
-            
-        SObject[] ret = new SObject[]{};
-
-        for(SObject record : scope){
-
-            SObject cachedRecord = cache.get(record.Id);
-
-            if(cachedRecord != null)
-                ret.add(cachedRecord);
-            else
-                ret.add(record);
-        }
-
-        return ret;
-    }
-
-    private static Set<Id> getUncachedIds(List<SObject> scope){
-
-        Set<Id> ret = new Set<Id>();
-
-        for(SObject record : scope){
-
-            if(!cache.containsKey(record.Id))
-                ret.add(record.Id);
-        }
-        
-        return ret;
-    }
-
-    
-    /**
-    * It is meant to perform a super query as needed to get all the relevant information including parent's fields and the related child records against the trigger's scope,
-    * and then cache the results for the transaction, so that multiple queries can be avoided; 
-    *
-    * By default, it is getting the records from @Trigger.old, or a blank list when @Trigger.old is null(insert & undelete events), without additional query 
-    * The override is needed when the trigger context need more information from DB to drive the logic.
-    * 
-    * Example: [SELECT Account.Name, Account.Website, FirstName, LastName, (SELECT CaseNumber FROM Cases) FROM Contact where Id in: ids]
-    * Note: while using the chid relational SOQL query as the above, if there are a mass number of children (e.g. 1000 on average) for each record, 
-    *       the child relational SOQL query should be alternated with more efficient approaches such as Aggregate SOQL.
-    */
-    protected virtual SObject[] detailize(Set<Id> ids){
-
-        return Trigger.old != null ? Trigger.old : new SObject[]{};
-    }
-
-    public static SObject getDbRecord(Id id){
-
-        return cache.get(id);
-    }
-    
 }
