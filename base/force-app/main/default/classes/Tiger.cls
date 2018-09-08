@@ -29,9 +29,8 @@
 * Tiger is a short name of Trigger. Note: this is not so-called "pattern" - TriggerHandler
 * Advantages: 
 *   1.Each DML action can be self sufficient and independent of each other, which simply scales
-*   2.It is possible to avoid most of the DB queries by caching the records returned by @detailize method at the transaction level
-*   3.The sequence of execution can be defined, and defined at the metadata level - @TriggerActions__mdt
-*   4.The trigger actions can be grouped by sObjects, and then Applications:
+*   2.The sequence of execution can be defined, and defined at the metadata level - @TriggerActions__mdt
+*   3.The trigger actions can be grouped by sObjects, and then Applications:
 *     e.g. if the Account sObject is shared by 3 Apps - Sales, Service & Market, the actions for each App can be grouped into a single record of TriggerActions__mdt. 
 *     e.g. if a global company uses the Account in its Sales App, and different regions/countries have their own business processes, the region wise trigger actions can be grouped into the same metadata record. 
 */
