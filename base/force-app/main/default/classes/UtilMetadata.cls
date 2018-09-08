@@ -24,87 +24,87 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  **/
 public class UtilMetadata {
- 
-    public static Schema.DescribeSObjectResult getDescribeSObjectResult(String sObjectTypeName){
-       
-        return getSObjectType(sObjectTypeName).getDescribe();
-    }
-    
-    public static Schema.DescribeSObjectResult getDescribeSObjectResult(SObject record){
-    	
-    	return record.getSObjectType().getDescribe();
-    }
-    
-    public static Schema.DescribeSObjectResult getDescribeSObjectResult(SObject[] records){
-    	
-    	return records.getSObjectType().getDescribe();
-    }
-       
-    
-    public static String getKeyPrefix(String sObjectName){
-        
-        return getKeyPrefix(getDescribeSObjectResult(sObjectName));
-    }
-    
-    public static String getKeyPrefix(Schema.DescribeSObjectResult describeSObjectResult){
-    	
-    	return describeSObjectResult.getKeyPrefix();
-    }
-    
-    public static Schema.SObjectType getSObjectType(String sObjectTypeName){
-       
-        return Schema.getGlobalDescribe().get(sObjectTypeName);
-    }
-    
-    public static String getLabel(String sObjectTypeName){
-    	
-    	return getDescribeSObjectResult(sObjectTypeName).getLabel();
-    }
-    
-    public static String getLabelPlural(String sObjectTypeName){
-    	
-    	return getDescribeSObjectResult(sObjectTypeName).getLabelPlural();
-    }
-     
-    public static String getSObjectTypeName(SObject record){
-       
-        return getDescribeSObjectResult(record).getName();
-    }    
-    
-    public static String getSObjectTypeName(SObject[] records){
-    	
-    	return getDescribeSObjectResult(records).getName();
-    }
-    
-    
-    private static Map<String, Map<String, Schema.ChildRelationship>> childRelationshipsMap = new Map<String, Map<String, Schema.ChildRelationship>>();
-    
-    //Map<getRelationshipName, Schema.ChildRelationship>
-    public static Map<String, Schema.ChildRelationship> getChildRelationshipsMap(String sObjectTypeName){
-    	
-    	if(childRelationshipsMap.containsKey(sObjectTypeName)) 
-    		return childRelationshipsMap.get(sObjectTypeName);
-    	
-    	Schema.ChildRelationship[] relationships = getDescribeSObjectResult(sObjectTypeName).getChildRelationships();
-    	
-    	Map<String, Schema.ChildRelationship> ret = new Map<String, Schema.ChildRelationship>();
-    	
-    	for(Schema.ChildRelationship re : relationships){
-    		ret.put(re.getRelationshipName(), re);
-    	}
-    	
-    	childRelationshipsMap.put(sObjectTypeName, ret);
-    	
-    	return ret;
-    }
-    
-    public static String getChildRelationshipSObjectTypeName(String parentSObjectTypeName, String childRelationshipName){
-    	
-    	return getChildRelationshipsMap(parentSObjectTypeName).get(childRelationshipName).getChildSObject().getDescribe().getName();
-    }
-	
-    public static Id getRecordTypeId(String sObjectTypeName, String recordTypeDeveloperName){
 
-        return getDescribeSObjectResult(sObjectTypeName).getRecordTypeInfosByDeveloperName().get(recordTypeDeveloperName).getRecordTypeId();
-    }
+public static Schema.DescribeSObjectResult getDescribeSObjectResult(String sObjectTypeName){
+
+	return getSObjectType(sObjectTypeName).getDescribe();
+}
+
+public static Schema.DescribeSObjectResult getDescribeSObjectResult(SObject record){
+
+	return record.getSObjectType().getDescribe();
+}
+
+public static Schema.DescribeSObjectResult getDescribeSObjectResult(SObject[] records){
+
+	return records.getSObjectType().getDescribe();
+}
+
+
+public static String getKeyPrefix(String sObjectName){
+
+	return getKeyPrefix(getDescribeSObjectResult(sObjectName));
+}
+
+public static String getKeyPrefix(Schema.DescribeSObjectResult describeSObjectResult){
+
+	return describeSObjectResult.getKeyPrefix();
+}
+
+public static Schema.SObjectType getSObjectType(String sObjectTypeName){
+
+	return Schema.getGlobalDescribe().get(sObjectTypeName);
+}
+
+public static String getLabel(String sObjectTypeName){
+
+	return getDescribeSObjectResult(sObjectTypeName).getLabel();
+}
+
+public static String getLabelPlural(String sObjectTypeName){
+
+	return getDescribeSObjectResult(sObjectTypeName).getLabelPlural();
+}
+
+public static String getSObjectTypeName(SObject record){
+
+	return getDescribeSObjectResult(record).getName();
+}
+
+public static String getSObjectTypeName(SObject[] records){
+
+	return getDescribeSObjectResult(records).getName();
+}
+
+
+private static Map<String, Map<String, Schema.ChildRelationship> > childRelationshipsMap = new Map<String, Map<String, Schema.ChildRelationship> >();
+
+//Map<getRelationshipName, Schema.ChildRelationship>
+public static Map<String, Schema.ChildRelationship> getChildRelationshipsMap(String sObjectTypeName){
+
+	if(childRelationshipsMap.containsKey(sObjectTypeName))
+		return childRelationshipsMap.get(sObjectTypeName);
+
+	Schema.ChildRelationship[] relationships = getDescribeSObjectResult(sObjectTypeName).getChildRelationships();
+
+	Map<String, Schema.ChildRelationship> ret = new Map<String, Schema.ChildRelationship>();
+
+	for(Schema.ChildRelationship re : relationships) {
+		ret.put(re.getRelationshipName(), re);
+	}
+
+	childRelationshipsMap.put(sObjectTypeName, ret);
+
+	return ret;
+}
+
+public static String getChildRelationshipSObjectTypeName(String parentSObjectTypeName, String childRelationshipName){
+
+	return getChildRelationshipsMap(parentSObjectTypeName).get(childRelationshipName).getChildSObject().getDescribe().getName();
+}
+
+public static Id getRecordTypeId(String sObjectTypeName, String recordTypeDeveloperName){
+
+	return getDescribeSObjectResult(sObjectTypeName).getRecordTypeInfosByDeveloperName().get(recordTypeDeveloperName).getRecordTypeId();
+}
 }

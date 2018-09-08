@@ -22,153 +22,153 @@
  *  OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  *  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-**/
+ **/
 public class UtilField {
-   	
-	public static Map<String, Schema.SObjectField> getFieldsMap(Schema.DescribeSObjectResult describeSObject){
-    
-    	return FieldIdentifier.getFieldsMap(describeSObject);
-    }
-    
-    public static Map<String, Schema.SObjectField> getFieldsMap(String sObjectTypeName){
-    
-    	return getFieldsMap(UtilMetadata.getDescribeSObjectResult(sObjectTypeName));
-    }
-    
-    
-    public static Object getFieldValue(SObject sobj, String complexFieldName){
-    	
-    	String[] fieldNameSerials = complexFieldName.split('\\.');
-    	
-    	SObject currentSObject = sobj;
-    	
-    	for(Integer i = 0; i < fieldNameSerials.size() - 1; ++ i){
-    		
-    		currentSObject = currentSObject.getSObject(fieldNameSerials[i]);
-    	}
-    	
-    	return currentSObject.get(fieldNameSerials[fieldNameSerials.size() - 1]);
-    }
-    
-    public static String getSimpleFieldLabel(String sObjectTypeName, String fieldName){
-    	
-    	return new FieldIdentifier(sObjectTypeName, fieldName).getLastFieldLabel();
-    }
-    
-    public static String getFieldLabel(String sObjectTypeName, String fieldName){
-    	
-    	return new FieldIdentifier(sObjectTypeName, fieldName).getLabel();
-    }
-    
-    public static String getFieldLabel(String sObjectTypeName, String fieldName, Boolean showingSimpleLabel){
-    	
-    	if(showingSimpleLabel)
-    		return getSimpleFieldLabel(sObjectTypeName, fieldName);
-    	
-    	return getFieldLabel(sObjectTypeName, fieldName);
-    }
-    
-    public static String getFieldLabel(Schema.DescribeSObjectResult describeSObjectResult, String fieldName){
-    	
-    	return new FieldIdentifier(describeSObjectResult, fieldName).getLabel();
-    }
-    
-    public static Schema.DisplayType getFieldType(String sObjectTypeName,String fieldName){
-    	
-    	return new FieldIdentifier(sObjectTypeName,fieldName).getType();
-    }
-    
-    public static Schema.DisplayType getFieldType(SObject record,String fieldName){
-    	
-    	return getFieldType(UtilMetadata.getSObjectTypeName(record), fieldName);
-    }
-    
-    public static Schema.DisplayType getFieldType(SObject[] records, String fieldName){
-    	
-    	
-    	return getFieldType(UtilMetadata.getSObjectTypeName(records), fieldName);
-    }
-    
-    public static Schema.DescribeFieldResult getDescribeFieldResult(String sObjectTypeName, String fieldName){
-    	
-    	return new FieldIdentifier(sObjectTypeName, fieldName).getLastDescribeFieldResult();
-    }
-    
-    
-    public static Schema.DescribeFieldResult getDescribeFieldResult(Schema.DescribeSObjectResult describeSObject, String fieldName){
-    	
-    	return new FieldIdentifier(describeSObject, fieldName).getLastDescribeFieldResult();
-    }
-        
-    public static List<Schema.Picklistentry> getPicklist(Schema.DescribeSObjectResult describeSObject, String fieldName){
-        
-        return getDescribeFieldResult(describeSObject,fieldName).getPicklistValues();
-    }
-    
-    public static List<Schema.Picklistentry> getPicklist(SObject obj,String fieldName){
-        
-        return getPicklist(obj.getSObjectType().getDescribe(), fieldName);
-    }
-    
-    public static List<Schema.Picklistentry> getPicklist(String sObjectTypeName,String fieldName){
-    	
-    	return getPicklist(UtilMetadata.getDescribeSObjectResult(sObjectTypeName), fieldName);
-    }
-    
-    
-    public static List<SelectOption> addSelectOptions(List<SelectOption> initialOptions, String sObjectTypeName, String fieldName){
-		
-		for(Schema.Picklistentry entry : getPicklist(sObjectTypeName, fieldName)){
-			if(entry.isActive()){
-				initialOptions.add(
-					new SelectOption(entry.getValue(), entry.getLabel()));
-			}
+
+public static Map<String, Schema.SObjectField> getFieldsMap(Schema.DescribeSObjectResult describeSObject){
+
+	return FieldIdentifier.getFieldsMap(describeSObject);
+}
+
+public static Map<String, Schema.SObjectField> getFieldsMap(String sObjectTypeName){
+
+	return getFieldsMap(UtilMetadata.getDescribeSObjectResult(sObjectTypeName));
+}
+
+
+public static Object getFieldValue(SObject sobj, String complexFieldName){
+
+	String[] fieldNameSerials = complexFieldName.split('\\.');
+
+	SObject currentSObject = sobj;
+
+	for(Integer i = 0; i < fieldNameSerials.size() - 1; ++i) {
+
+		currentSObject = currentSObject.getSObject(fieldNameSerials[i]);
+	}
+
+	return currentSObject.get(fieldNameSerials[fieldNameSerials.size() - 1]);
+}
+
+public static String getSimpleFieldLabel(String sObjectTypeName, String fieldName){
+
+	return new FieldIdentifier(sObjectTypeName, fieldName).getLastFieldLabel();
+}
+
+public static String getFieldLabel(String sObjectTypeName, String fieldName){
+
+	return new FieldIdentifier(sObjectTypeName, fieldName).getLabel();
+}
+
+public static String getFieldLabel(String sObjectTypeName, String fieldName, Boolean showingSimpleLabel){
+
+	if(showingSimpleLabel)
+		return getSimpleFieldLabel(sObjectTypeName, fieldName);
+
+	return getFieldLabel(sObjectTypeName, fieldName);
+}
+
+public static String getFieldLabel(Schema.DescribeSObjectResult describeSObjectResult, String fieldName){
+
+	return new FieldIdentifier(describeSObjectResult, fieldName).getLabel();
+}
+
+public static Schema.DisplayType getFieldType(String sObjectTypeName,String fieldName){
+
+	return new FieldIdentifier(sObjectTypeName,fieldName).getType();
+}
+
+public static Schema.DisplayType getFieldType(SObject record,String fieldName){
+
+	return getFieldType(UtilMetadata.getSObjectTypeName(record), fieldName);
+}
+
+public static Schema.DisplayType getFieldType(SObject[] records, String fieldName){
+
+
+	return getFieldType(UtilMetadata.getSObjectTypeName(records), fieldName);
+}
+
+public static Schema.DescribeFieldResult getDescribeFieldResult(String sObjectTypeName, String fieldName){
+
+	return new FieldIdentifier(sObjectTypeName, fieldName).getLastDescribeFieldResult();
+}
+
+
+public static Schema.DescribeFieldResult getDescribeFieldResult(Schema.DescribeSObjectResult describeSObject, String fieldName){
+
+	return new FieldIdentifier(describeSObject, fieldName).getLastDescribeFieldResult();
+}
+
+public static List<Schema.Picklistentry> getPicklist(Schema.DescribeSObjectResult describeSObject, String fieldName){
+
+	return getDescribeFieldResult(describeSObject,fieldName).getPicklistValues();
+}
+
+public static List<Schema.Picklistentry> getPicklist(SObject obj,String fieldName){
+
+	return getPicklist(obj.getSObjectType().getDescribe(), fieldName);
+}
+
+public static List<Schema.Picklistentry> getPicklist(String sObjectTypeName,String fieldName){
+
+	return getPicklist(UtilMetadata.getDescribeSObjectResult(sObjectTypeName), fieldName);
+}
+
+
+public static List<SelectOption> addSelectOptions(List<SelectOption> initialOptions, String sObjectTypeName, String fieldName){
+
+	for(Schema.Picklistentry entry : getPicklist(sObjectTypeName, fieldName)) {
+		if(entry.isActive()) {
+			initialOptions.add(
+				new SelectOption(entry.getValue(), entry.getLabel()));
 		}
-		
-		return initialOptions;
-    }
-    
-	//this method is designed for vfpage to use
-    public static List<SelectOption> getSelectOptions(String sObjectTypeName, String fieldName){
-		
-		List<Schema.Picklistentry> picklistEntries = getPicklist(sObjectTypeName, fieldName);
-		
-		List<SelectOption> ret = new List<SelectOption>();
-		
-		ret.add(new SelectOption('', '---None---'));
-		
-		for(Schema.Picklistentry entry : picklistEntries){
-			if(entry.isActive()){
-				ret.add(
-					new SelectOption(entry.getValue(), entry.getLabel()));
-			}
+	}
+
+	return initialOptions;
+}
+
+//this method is designed for vfpage to use
+public static List<SelectOption> getSelectOptions(String sObjectTypeName, String fieldName){
+
+	List<Schema.Picklistentry> picklistEntries = getPicklist(sObjectTypeName, fieldName);
+
+	List<SelectOption> ret = new List<SelectOption>();
+
+	ret.add(new SelectOption('', '---None---'));
+
+	for(Schema.Picklistentry entry : picklistEntries) {
+		if(entry.isActive()) {
+			ret.add(
+				new SelectOption(entry.getValue(), entry.getLabel()));
 		}
-		
-		return ret;
 	}
-	
-	
-	public static Component.Apex.SelectList getTagSelectList(String sObjectTypeName, String fieldName){
-	 	
-	 	Component.Apex.SelectList selectList = new Component.Apex.SelectList();
-	
-	 	Component.Apex.SelectOptions selectOptions = new Component.Apex.SelectOptions();
-	 	selectOptions.value = getSelectOptions(sObjectTypeName, fieldName);
-	 	selectList.childComponents.add(selectOptions);
-	 	
-	 	return selectList;
-	}
-    
-    
-    public static Boolean isNameField(String sObjectTypeName, String fieldName){
-    	Schema.DescribeFieldResult fieldResult = getDescribeFieldResult(sObjectTypeName, fieldName);
-    	return fieldResult.isNameField();
-    }   
-	
-	
-	public static Object getFieldValueFromString(String sObjectTypeName,String fieldName, String strValue){
-		
-		return OFieldType.getInstance(sObjectTypeName, fieldName).getFieldValue(strValue);
-	}
-	
+
+	return ret;
+}
+
+
+public static Component.Apex.SelectList getTagSelectList(String sObjectTypeName, String fieldName){
+
+	Component.Apex.SelectList selectList = new Component.Apex.SelectList();
+
+	Component.Apex.SelectOptions selectOptions = new Component.Apex.SelectOptions();
+	selectOptions.value = getSelectOptions(sObjectTypeName, fieldName);
+	selectList.childComponents.add(selectOptions);
+
+	return selectList;
+}
+
+
+public static Boolean isNameField(String sObjectTypeName, String fieldName){
+	Schema.DescribeFieldResult fieldResult = getDescribeFieldResult(sObjectTypeName, fieldName);
+	return fieldResult.isNameField();
+}
+
+
+public static Object getFieldValueFromString(String sObjectTypeName,String fieldName, String strValue){
+
+	return OFieldType.getInstance(sObjectTypeName, fieldName).getFieldValue(strValue);
+}
+
 }

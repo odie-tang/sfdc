@@ -7,10 +7,14 @@ global class Stack {
 	
 	global Object peek(){
 		
+		if(isEmpty()) throw new ApplicationException('Stack is empty!');
+
 		return elements.get(size() - 1);
 	}
 	
 	global Object pop(){
+		
+		if(isEmpty()) throw new ApplicationException('Stack is empty!');
 		
 		return elements.remove(size() - 1);
 	}

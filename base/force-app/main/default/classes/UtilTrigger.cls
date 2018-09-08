@@ -108,7 +108,7 @@ public static Boolean fieldChanged(SObject record, String fieldName, Object[] ne
 
 public static Boolean fieldChanged(SObject record, String fieldName, Object oldValue, Object[] newValues){
 
-    return fieldChanged(record, fieldName, new Object[]{oldValue}, newValues);
+	return fieldChanged(record, fieldName, new Object[] {oldValue}, newValues);
 }
 
 public static Boolean fieldChanged(SObject record, String fieldName, Object[] oldValues, Object[] newValues){
