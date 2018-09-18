@@ -77,17 +77,7 @@ public static Boolean fieldChanged(SObject record, String fieldName, Object oldV
 	return oldRecord.get(fieldName) == oldValue && newRecord.get(fieldName) == newValue;
 }
 
-public static Boolean fieldChanged(SObject record, String fieldName, Object newValue){
-
-	SObject newRecord = Trigger.newMap.get(record.Id);
-
-	SObject oldRecord = Trigger.oldMap.get(record.Id);
-
-	return oldRecord.get(fieldName) != newValue
-	       && newRecord.get(fieldName) == newValue;
-}
-
-public static Boolean fieldChanged(SObject record, String fieldName, Object[] newValues){
+public static Boolean fieldChangedTo(SObject record, String fieldName, Object[] newValues){
 
 	SObject newRecord = Trigger.newMap.get(record.Id);
 
@@ -98,6 +88,25 @@ public static Boolean fieldChanged(SObject record, String fieldName, Object[] ne
 		for(Object value : newValues) {
 
 			if(newRecord.get(fieldName) == value) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+public static Boolean fieldChangedFrom(SObject record, String fieldName, Object[] oldValues){
+
+	SObject newRecord = Trigger.newMap.get(record.Id);
+
+	SObject oldRecord = Trigger.oldMap.get(record.Id);
+
+	if(oldRecord.get(fieldName) != newRecord.get(fieldName)) {
+
+		for(Object oldValue : oldValues) {
+
+			if(oldRecord.get(fieldName) == oldValue) {
 				return true;
 			}
 		}

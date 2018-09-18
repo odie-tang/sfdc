@@ -36,6 +36,8 @@
 */
 public virtual class Tiger {
 
+    private final Boolean ALL_OR_NOTHING;
+
     private static Map<String, Integer> sObjectTriggerCounterMap = new Map<String, Integer>();
     
     private static Map<String, List<String>> actions = new Map<String, List<String>>();
@@ -59,38 +61,43 @@ public virtual class Tiger {
     }
 
     public Tiger(){
-        
+
+        this(true);
+    }
+
+    public Tiger(Boolean allOrNothing){
+        this.ALL_OR_NOTHING = allOrNothing;
         addTriggerCount();
     }
 
     public interface BeforeInsert{
-        boolean isInScopeBi(SObject record);
+        boolean isInScopeBi(SObject newRecord);
         void handleBi(SObject[] recordsInScope);
     }
 
     public interface AfterInsert{
-        boolean isInScopeAi(SObject record);
+        boolean isInScopeAi(SObject newRecord);
         void handleAi(SObject[] recordsInScope);
     }
     public interface BeforeUpdate{
-        boolean isInScopeBu(SObject record);
+        boolean isInScopeBu(SObject newRecord);
         void handleBu(SObject[] recordsInScope);
     }
     public interface AfterUpdate{
-        boolean isInScopeAu(SObject record);
+        boolean isInScopeAu(SObject newRecord);
         void handleAu(SObject[] recordsInScope);
     }
     public interface BeforeDelete{
-        boolean isInScopeBd(SObject record);
+        boolean isInScopeBd(SObject oldRecord);
         void handleBd(SObject[] recordsInScope);
     }
     public interface AfterDelete{
-        boolean isInScopeAd(SObject record);
+        boolean isInScopeAd(SObject oldRecord);
         void handleAd(SObject[] recordsInScope);
     }
    
     public interface AfterUndelete{
-        boolean isInScopeAud(SObject record);
+        boolean isInScopeAud(SObject newRecord);
         void handleAud(SObject[] recordsInScope);
     }
 
@@ -168,8 +175,28 @@ public virtual class Tiger {
 
     }
 
-
     public void handle(){
+
+        if(this.ALL_OR_NOTHING){
+            
+            Savepoint sp = Database.setSavepoint();
+
+            try{
+                doHandle();
+            }
+            catch(Exception e){
+
+                Database.rollback(sp);
+                throw e;
+            }
+        }
+        else{
+
+            doHandle();
+        }
+    }
+
+    public void doHandle(){
 
         initCurrentSObjectTriggerActions();
         
@@ -276,7 +303,7 @@ public virtual class Tiger {
 
         SObject[] recordsInScope = new SObject[]{};
         
-        for(SObject record : trigger.new){
+        for(SObject record : trigger.old){
             
             if(bdAction.isInScopeBd(record))
                 recordsInScope.add(record);

@@ -39,7 +39,34 @@ public class UtilSoql {
 
 		return '(' + String.join(fieldValuesInSoql, ',') + ')';
 	}
+
+	public static String valuesInSoqlCondition(String sObjectName, String fieldName, Object[] fieldValues){
+
+		if(fieldValues == null || fieldValues.isEmpty()) return null;
+
+		OFieldType ft = OFieldType.getInstance(sObjectName, fieldName);
+
+		String[] fieldValuesInSoql = ft.getFieldValuesInSoqlCondition(fieldValues);
+
+		return '(' + String.join(fieldValuesInSoql, ',') + ')';
+	}
     
+	public static String valuesInSoqlCondition(String[] values){
+
+		if(values == null || values.isEmpty()) return null;
+
+		String[] valuesInSoqlCondition = new String[]{};
+
+		for(String value : values)
+			valuesInSoqlCondition.add(inSoqlCondition(value));
+
+		return '(' + String.join(valuesInSoqlCondition, ',') + ')';
+	}
+
+	public static String inSoqlCondition(String value){
+
+		return '\'' + String.escapeSingleQuotes(value) + '\'';
+	}
 
 	public static List<String> smallValueFieldNames(String sObjectTypeName){
 		
