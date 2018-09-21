@@ -111,11 +111,11 @@
             "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\CacheManager.cls",
             "isDirectory": false,
             "isMetadataFile": false,
-            "size": 4938,
-            "modifiedTime": 1537124829906,
-            "changeTime": 1537124829906,
+            "size": 5356,
+            "modifiedTime": 1537138700077,
+            "changeTime": 1537138700077,
             "isWorkspace": false,
-            "contentHash": "bd9bd4cff0f8cd8a08b8bee293ab3f33aad6df29"
+            "contentHash": "020ac6950f63b70911a45862cd2d2211dde6be53"
         }
     ],
     [
@@ -256,15 +256,15 @@
     [
         "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Tiger.cls",
         {
+            "state": "u",
             "sourcePath": "c:\\Users\\guihu\\workspace\\git\\sfdc\\base\\force-app\\main\\default\\classes\\Tiger.cls",
             "isDirectory": false,
-            "size": 12685,
-            "modifiedTime": 1537110727664,
-            "changeTime": 1537110727664,
-            "contentHash": "6340f4b960cbf22409b752545e94b2e292b79f7c",
             "isMetadataFile": false,
-            "state": "u",
-            "isWorkspace": false
+            "size": 13194,
+            "modifiedTime": 1537246261011,
+            "changeTime": 1537246261011,
+            "isWorkspace": false,
+            "contentHash": "1b1602e6188b4dc928cbdce5f45665575d5cb98f"
         }
     ],
     [

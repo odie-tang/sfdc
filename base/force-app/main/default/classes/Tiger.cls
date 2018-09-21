@@ -36,8 +36,6 @@
 */
 public virtual class Tiger {
 
-    private final Boolean ALL_OR_NOTHING;
-
     private static Map<String, Integer> sObjectTriggerCounterMap = new Map<String, Integer>();
     
     private static Map<String, List<String>> actions = new Map<String, List<String>>();
@@ -61,12 +59,6 @@ public virtual class Tiger {
     }
 
     public Tiger(){
-
-        this(true);
-    }
-
-    public Tiger(Boolean allOrNothing){
-        this.ALL_OR_NOTHING = allOrNothing;
         addTriggerCount();
     }
 
@@ -175,28 +167,7 @@ public virtual class Tiger {
 
     }
 
-    public void handle(){
-
-        if(this.ALL_OR_NOTHING){
-            
-            Savepoint sp = Database.setSavepoint();
-
-            try{
-                doHandle();
-            }
-            catch(Exception e){
-
-                Database.rollback(sp);
-                throw e;
-            }
-        }
-        else{
-
-            doHandle();
-        }
-    }
-
-    public void doHandle(){
+    public void fire(){
 
         initCurrentSObjectTriggerActions();
         
