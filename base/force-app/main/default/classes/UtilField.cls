@@ -94,7 +94,6 @@ public static Schema.DescribeFieldResult getDescribeFieldResult(String sObjectTy
 	return new FieldIdentifier(sObjectTypeName, fieldName).getLastDescribeFieldResult();
 }
 
-
 public static Schema.DescribeFieldResult getDescribeFieldResult(Schema.DescribeSObjectResult describeSObject, String fieldName){
 
 	return new FieldIdentifier(describeSObject, fieldName).getLastDescribeFieldResult();
