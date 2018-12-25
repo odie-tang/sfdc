@@ -35,6 +35,9 @@
 *     e.g. if a global company uses the Account in its Sales App, and different regions/countries have their own business processes, the region wise trigger actions can be grouped into the same metadata record. 
 */
 public virtual class Tiger {
+    
+    private static Map<String, Integer> sObjectTriggerCounterMap = new Map<String, Integer>();
+    
     private static Map<String, List<String>> actions = new Map<String, List<String>>();
     private static Map<String, List<BeforeInsert>> biActions = new Map<String, List<BeforeInsert>>();
     private static Map<String, List<AfterInsert>> aiActions = new Map<String, List<AfterInsert>>();
@@ -47,6 +50,10 @@ public virtual class Tiger {
     static{
 
         fetchAllTriggerActionsMdt();
+    }
+
+    public Tiger(){
+        addTriggerCount();
     }
 
     public interface BeforeInsert{
@@ -302,6 +309,20 @@ public virtual class Tiger {
     public Integer getTriggerLevel(){
 
         return sObjectTriggerCounterMap.get(getSObjectName());
+    }
+    
+    private static void addTriggerCount(){
+
+        String sObjectName = getSObjectName();
+
+        if(!sObjectTriggerCounterMap.containsKey(sObjectName)){
+
+            sObjectTriggerCounterMap.put(sObjectName, 1);
+
+            return;
+        }
+
+        sObjectTriggerCounterMap.put(sObjectName, sObjectTriggerCounterMap.get(sObjectName) + 1);
     }
 
     private static String getSObjectName(){
