@@ -24,16 +24,6 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 
-/**
-* This is an enterprise trigger base that manages the DML actions in a scalable, efficient, flexible and simple way.
-* Tiger is a short name of Trigger. Note: this is not so-called "pattern" - TriggerHandler
-* Advantages: 
-*   1.Each DML action can be self sufficient and independent of each other, which simply scales
-*   2.The sequence of execution can be defined, and defined at the metadata level - @TriggerActions__mdt
-*   3.The trigger actions can be grouped by sObjects, and then Applications:
-*     e.g. if the Account sObject is shared by 3 Apps - Sales, Service & Market, the actions for each App can be grouped into a single record of TriggerActions__mdt. 
-*     e.g. if a global company uses the Account in its Sales App, and different regions/countries have their own business processes, the region wise trigger actions can be grouped into the same metadata record. 
-*/
 public virtual class Tiger {
     
     private static Map<String, Integer> sObjectTriggerCounterMap = new Map<String, Integer>();
@@ -57,34 +47,34 @@ public virtual class Tiger {
     }
 
     public interface BeforeInsert{
-        boolean isInScopeBi(SObject newRecord);
-        void handleBi(SObject[] recordsInScope);
+        boolean isInScopeBi(sObject newRecord);
+        void handleBi(sObject[] recordsInScope);
     }
 
     public interface AfterInsert{
-        boolean isInScopeAi(SObject newRecord);
-        void handleAi(SObject[] recordsInScope);
+        boolean isInScopeAi(sObject newRecord);
+        void handleAi(sObject[] recordsInScope);
     }
     public interface BeforeUpdate{
-        boolean isInScopeBu(SObject newRecord);
-        void handleBu(SObject[] recordsInScope);
+        boolean isInScopeBu(sObject newRecord);
+        void handleBu(sObject[] recordsInScope);
     }
     public interface AfterUpdate{
-        boolean isInScopeAu(SObject newRecord);
-        void handleAu(SObject[] recordsInScope);
+        boolean isInScopeAu(sObject newRecord);
+        void handleAu(sObject[] recordsInScope);
     }
     public interface BeforeDelete{
-        boolean isInScopeBd(SObject oldRecord);
-        void handleBd(SObject[] recordsInScope);
+        boolean isInScopeBd(sObject oldRecord);
+        void handleBd(sObject[] recordsInScope);
     }
     public interface AfterDelete{
-        boolean isInScopeAd(SObject oldRecord);
-        void handleAd(SObject[] recordsInScope);
+        boolean isInScopeAd(sObject oldRecord);
+        void handleAd(sObject[] recordsInScope);
     }
    
     public interface AfterUndelete{
-        boolean isInScopeAud(SObject newRecord);
-        void handleAud(SObject[] recordsInScope);
+        boolean isInScopeAud(sObject newRecord);
+        void handleAud(sObject[] recordsInScope);
     }
 
     /**
@@ -210,9 +200,9 @@ public virtual class Tiger {
 
     private static void handle(BeforeInsert biAction){
         
-        SObject[] recordsInScope = new SObject[]{};
+        sObject[] recordsInScope = new sObject[]{};
         
-        for(SObject record : trigger.new){
+        for(sObject record : trigger.new){
             
             if(biAction.isInScopeBi(record))
                 recordsInScope.add(record);
@@ -224,9 +214,9 @@ public virtual class Tiger {
 
     private static void handle(AfterInsert aiAction){
         
-        SObject[] recordsInScope = new SObject[]{};
+        sObject[] recordsInScope = new sObject[]{};
         
-        for(SObject record : trigger.new){
+        for(sObject record : trigger.new){
             
             if(aiAction.isInScopeAi(record))
                 recordsInScope.add(record);
@@ -238,9 +228,9 @@ public virtual class Tiger {
 
     private static void handle(BeforeUpdate buAction){
 
-        SObject[] recordsInScope = new SObject[]{};
+        sObject[] recordsInScope = new sObject[]{};
         
-        for(SObject record : trigger.new){
+        for(sObject record : trigger.new){
             
             if(buAction.isInScopeBu(record))
                 recordsInScope.add(record);
@@ -252,9 +242,9 @@ public virtual class Tiger {
 
     private static void handle(AfterUpdate auAction){
 
-        SObject[] recordsInScope = new SObject[]{};
+        sObject[] recordsInScope = new sObject[]{};
         
-        for(SObject record : trigger.new){
+        for(sObject record : trigger.new){
             
             if(auAction.isInScopeAu(record))
                 recordsInScope.add(record);
@@ -266,9 +256,9 @@ public virtual class Tiger {
 
     private static void handle(BeforeDelete bdAction){
 
-        SObject[] recordsInScope = new SObject[]{};
+        sObject[] recordsInScope = new sObject[]{};
         
-        for(SObject record : trigger.old){
+        for(sObject record : trigger.old){
             
             if(bdAction.isInScopeBd(record))
                 recordsInScope.add(record);
@@ -280,9 +270,9 @@ public virtual class Tiger {
 
     private static void handle(AfterDelete adAction){
 
-        SObject[] recordsInScope = new SObject[]{};
+        sObject[] recordsInScope = new sObject[]{};
         
-        for(SObject record : trigger.old){
+        for(sObject record : trigger.old){
             
             if(adAction.isInScopeAd(record))
                 recordsInScope.add(record);
@@ -294,9 +284,9 @@ public virtual class Tiger {
 
     private static void handle(AfterUndelete audAction){
 
-        SObject[] recordsInScope = new SObject[]{};
+        sObject[] recordsInScope = new sObject[]{};
         
-        for(SObject record : trigger.new){
+        for(sObject record : trigger.new){
             
             if(audAction.isInScopeAud(record))
                 recordsInScope.add(record);
@@ -327,7 +317,7 @@ public virtual class Tiger {
 
     private static String getSObjectName(){
 
-        List<SObject> recordsInTrigger = trigger.new != null ? trigger.new : trigger.old;
+        List<sObject> recordsInTrigger = trigger.new != null ? trigger.new : trigger.old;
 
         return recordsInTrigger.getSObjectType().getDescribe().getName();
     }
