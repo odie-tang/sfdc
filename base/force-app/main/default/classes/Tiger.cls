@@ -83,29 +83,23 @@ public virtual class Tiger {
 
     public Tiger(String[] actionerClasses){
 
-        if(!actionersBi.containsKey(getSObjectName())){
+        initActionersMap();
 
-            initActionersMap();
+        for(String actionerClass : actionerClasses){
 
-            for(String actionerClass : actionerClasses){
+            Actioner actioner = (Actioner)Type.forName(actionerClass).newInstance();
 
-                Actioner actioner = (Actioner)Type.forName(actionerClass).newInstance();
-
-                addActioner(actioner);
-            }
+            addActioner(actioner);
         }
     }
 
     public Tiger(Actioner[] actioners){
 
-        if(!actionersBi.containsKey(getSObjectName())){
+        initActionersMap();
 
-            initActionersMap();
-
-            for(Actioner actioner : actioners){
-
-                addActioner(actioner);
-            }
+        for(Actioner actioner : actioners){
+            
+            addActioner(actioner);
         }
     }
 
