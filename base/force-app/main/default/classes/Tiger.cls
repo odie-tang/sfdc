@@ -114,11 +114,6 @@ public virtual class Tiger {
         }
     }
 
-    private void initActioners(String actionerClasses){
-
-        
-    }
-
     private void addActioner(Actioner actioner){
         
         if(actioner instanceof BeforeInsert)
