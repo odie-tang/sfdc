@@ -25,21 +25,23 @@
 **/
 public virtual class Tiger {
     
-    private static Set<String> sObjectsAlreadyRunBi = new Set<String>();
-    private static Set<String> sObjectsAlreadyRunAi = new Set<String>();
-    private static Set<String> sObjectsAlreadyRunBu = new Set<String>();
-    private static Set<String> sObjectsAlreadyRunAu = new Set<String>();
-    private static Set<String> sObjectsAlreadyRunBd = new Set<String>();
-    private static Set<String> sObjectsAlreadyRunAd = new Set<String>();
-    private static Set<String> sObjectsAlreadyRunAud = new Set<String>();
+    private static Set<String> contextsAlreadyRunBi = new Set<String>();
+    private static Set<String> contextsAlreadyRunAi = new Set<String>();
+    private static Set<String> contextsAlreadyRunBu = new Set<String>();
+    private static Set<String> contextsAlreadyRunAu = new Set<String>();
+    private static Set<String> contextsAlreadyRunBd = new Set<String>();
+    private static Set<String> contextsAlreadyRunAd = new Set<String>();
+    private static Set<String> contextsAlreadyRunAud = new Set<String>();
+
+    private String context;
     
-    private static Map<String, List<BeforeInsert>> actionersBi = new Map<String, List<BeforeInsert>>();
-    private static Map<String, List<AfterInsert>> actionersAi = new Map<String, List<AfterInsert>>();
-    private static Map<String, List<BeforeUpdate>> actionersBu = new Map<String, List<BeforeUpdate>>();
-    private static Map<String, List<AfterUpdate>> actionersAu = new Map<String, List<AfterUpdate>>();
-    private static Map<String, List<BeforeDelete>> actionersBd = new Map<String, List<BeforeDelete>>();
-    private static Map<String, List<AfterDelete>> actionersAd = new Map<String, List<AfterDelete>>();
-    private static Map<String, List<AfterUndelete>> actionersAud = new Map<String, List<AfterUndelete>>();
+    private List<BeforeInsert> actionersBi = new List<BeforeInsert>();
+    private List<AfterInsert> actionersAi = new List<AfterInsert>();
+    private List<BeforeUpdate> actionersBu = new List<BeforeUpdate>();
+    private List<AfterUpdate> actionersAu = new List<AfterUpdate>();
+    private List<BeforeDelete> actionersBd = new List<BeforeDelete>();
+    private List<AfterDelete> actionersAd = new List<AfterDelete>();
+    private List<AfterUndelete> actionersAud = new List<AfterUndelete>();
 
     public interface RunRecursive{}
 
@@ -80,10 +82,19 @@ public virtual class Tiger {
         void processAud(SObject[] scope);
     }
 
-
     public Tiger(String[] actionerClasses){
 
-        initActionersMap();
+        this(actionerClasses, getSObjectName());
+    }
+
+    public Tiger(Actioner[] actioners){
+
+        this(actioners, getSObjectName());
+    }
+
+    public Tiger(String[] actionerClasses, String context){
+
+        this.context = context;
 
         for(String actionerClass : actionerClasses){
 
@@ -93,9 +104,9 @@ public virtual class Tiger {
         }
     }
 
-    public Tiger(Actioner[] actioners){
+    public Tiger(Actioner[] actioners, String context){
 
-        initActionersMap();
+        this.context = context;
 
         for(Actioner actioner : actioners){
             
@@ -103,43 +114,33 @@ public virtual class Tiger {
         }
     }
 
-    private void initActionersMap(){
+    private void initActioners(String actionerClasses){
 
-        String sObjectName = getSObjectName();
-
-        actionersBi.put(sObjectName, new List<BeforeInsert>());
-        actionersAi.put(sObjectName, new List<AfterInsert>());
-        actionersBu.put(sObjectName, new List<BeforeUpdate>());
-        actionersAu.put(sObjectName, new List<AfterUpdate>());
-        actionersBd.put(sObjectName, new List<BeforeDelete>());
-        actionersAd.put(sObjectName, new List<AfterDelete>());
-        actionersAud.put(sObjectName, new List<AfterUndelete>());
+        
     }
 
     private void addActioner(Actioner actioner){
-
-        String sObjectName = getSObjectName();
-
+        
         if(actioner instanceof BeforeInsert)
-            actionersBi.get(sObjectName).add((BeforeInsert)actioner);
+            actionersBi.add((BeforeInsert)actioner);
 
         if(actioner instanceof AfterInsert)
-            actionersAi.get(sObjectName).add((AfterInsert)actioner);
+            actionersAi.add((AfterInsert)actioner);
         
         if(actioner instanceof BeforeUpdate)
-            actionersBu.get(sObjectName).add((BeforeUpdate)actioner);
+            actionersBu.add((BeforeUpdate)actioner);
 
         if(actioner instanceof AfterUpdate)
-            actionersAu.get(sObjectName).add((AfterUpdate)actioner);
+            actionersAu.add((AfterUpdate)actioner);
         
         if(actioner instanceof BeforeDelete)
-            actionersBd.get(sObjectName).add((BeforeDelete)actioner);
+            actionersBd.add((BeforeDelete)actioner);
         
         if(actioner instanceof AfterDelete)
-            actionersAd.get(sObjectName).add((AfterDelete)actioner);
+            actionersAd.add((AfterDelete)actioner);
         
         if(actioner instanceof AfterUndelete)
-            actionersAud.get(sObjectName).add((AfterUndelete)actioner);
+            actionersAud.add((AfterUndelete)actioner);
     }
 
     public void fire(){
@@ -159,126 +160,112 @@ public virtual class Tiger {
         executeAfterUndelete();
     }
 
-    private static void executeBeforeInsert(){
+    private void executeBeforeInsert(){
 
         if(trigger.isBefore && trigger.isInsert){
 
-            String sObjectName = getSObjectName();
-
-            for(BeforeInsert actioner : actionersBi.get(sObjectName)){
+            for(BeforeInsert actioner : actionersBi){
             
-                Boolean isExecutable = ((actioner instanceof RunRecursive) || !sObjectsAlreadyRunBi.contains(sObjectName)) && !skipActioner(actioner);
+                Boolean isExecutable = ((actioner instanceof RunRecursive) || !contextsAlreadyRunBi.contains(context)) && !skipActioner(actioner);
                 
                 if(isExecutable) execute(actioner);
             }
             
-            sObjectsAlreadyRunBi.add(sObjectName);
+            contextsAlreadyRunBi.add(context);
         }
     }
 
-    private static void executeBeforeUpdate(){
+    private void executeBeforeUpdate(){
 
         if(trigger.isBefore && trigger.isUpdate){
-
-            String sObjectName = getSObjectName();
                 
-            for(BeforeUpdate actioner : actionersBu.get(sObjectName)){
+            for(BeforeUpdate actioner : actionersBu){
 
-                Boolean isExecutable = ((actioner instanceof RunRecursive) || !sObjectsAlreadyRunBu.contains(sObjectName)) && !skipActioner(actioner);
+                Boolean isExecutable = ((actioner instanceof RunRecursive) || !contextsAlreadyRunBu.contains(context)) && !skipActioner(actioner);
 
                 if(isExecutable) execute(actioner);
             }
 
-            sObjectsAlreadyRunBu.add(sObjectName);
+            contextsAlreadyRunBu.add(context);
         }
     }
 
-    private static void executeBeforeDelete(){
+    private void executeBeforeDelete(){
 
         if(trigger.isBefore && trigger.isDelete){
 
-            String sObjectName = getSObjectName();
+            for(BeforeDelete actioner : actionersBd){
 
-            for(BeforeDelete actioner : actionersBd.get(sObjectName)){
-
-                Boolean isExecutable = ((actioner instanceof RunRecursive) || !sObjectsAlreadyRunBd.contains(sObjectName)) && !skipActioner(actioner);
+                Boolean isExecutable = ((actioner instanceof RunRecursive) || !contextsAlreadyRunBd.contains(context)) && !skipActioner(actioner);
 
                 if(isExecutable) execute(actioner);
             }
 
-            sObjectsAlreadyRunBd.add(sObjectName);
+            contextsAlreadyRunBd.add(context);
         }
     }
     
-    private static void executeAfterInsert(){
-
-        String sObjectName = getSObjectName();
+    private void executeAfterInsert(){
 
         if(trigger.isAfter && trigger.isInsert){
 
-            for(AfterInsert actioner : actionersAi.get(sObjectName)){
+            for(AfterInsert actioner : actionersAi){
 
-                Boolean isExecutable = ((actioner instanceof RunRecursive) || !sObjectsAlreadyRunAi.contains(sObjectName)) && !skipActioner(actioner);
+                Boolean isExecutable = ((actioner instanceof RunRecursive) || !contextsAlreadyRunAi.contains(context)) && !skipActioner(actioner);
 
                 if(isExecutable) execute(actioner);
             }
 
-            sObjectsAlreadyRunAi.add(sObjectName);
+            contextsAlreadyRunAi.add(context);
         }
     }
     
-    private static void executeAfterUpdate(){
+    private void executeAfterUpdate(){
 
         if(trigger.isAfter && trigger.isUpdate){
 
-            String sObjectName = getSObjectName();
+            for(AfterUpdate actioner : actionersAu){
 
-            for(AfterUpdate actioner : actionersAu.get(sObjectName)){
-
-                Boolean isExecutable = ((actioner instanceof RunRecursive) || !sObjectsAlreadyRunAu.contains(sObjectName)) && !skipActioner(actioner);
+                Boolean isExecutable = ((actioner instanceof RunRecursive) || !contextsAlreadyRunAu.contains(context)) && !skipActioner(actioner);
 
                 if(isExecutable) execute(actioner);
             }
 
-            sObjectsAlreadyRunAu.add(sObjectName);
+            contextsAlreadyRunAu.add(context);
         }
     }
     
-    private static void executeAfterDelete(){
+    private void executeAfterDelete(){
 
         if(trigger.isAfter && trigger.isDelete){
 
-            String sObjectName = getSObjectName();
+            for(AfterDelete actioner : actionersAd){
 
-            for(AfterDelete actioner : actionersAd.get(sObjectName)){
-
-                Boolean isExecutable = ((actioner instanceof RunRecursive) || !sObjectsAlreadyRunAd.contains(sObjectName)) && !skipActioner(actioner);
+                Boolean isExecutable = ((actioner instanceof RunRecursive) || !contextsAlreadyRunAd.contains(context)) && !skipActioner(actioner);
 
                 if(isExecutable) execute(actioner);
             }
 
-            sObjectsAlreadyRunAd.add(sObjectName);
+            contextsAlreadyRunAd.add(context);
         }
     }
 
-    private static void executeAfterUndelete(){
+    private void executeAfterUndelete(){
 
         if(trigger.isAfter && trigger.isUndelete){
 
-            String sObjectName = getSObjectName();
+            for(AfterUndelete actioner : actionersAud){
 
-            for(AfterUndelete actioner : actionersAud.get(sObjectName)){
-
-                Boolean isExecutable = ((actioner instanceof RunRecursive) || !sObjectsAlreadyRunAud.contains(sObjectName)) && !skipActioner(actioner);
+                Boolean isExecutable = ((actioner instanceof RunRecursive) || !contextsAlreadyRunAud.contains(context)) && !skipActioner(actioner);
 
                 if(isExecutable) execute(actioner);
             }
 
-            sObjectsAlreadyRunAud.add(sObjectName);
+            contextsAlreadyRunAud.add(context);
         }
     }
 
-    private static void execute(BeforeInsert actioner){
+    private void execute(BeforeInsert actioner){
         
         SObject[] scope = new SObject[]{};
         
@@ -292,7 +279,7 @@ public virtual class Tiger {
             actioner.processBi(scope);
     }
 
-    private static void execute(AfterInsert actioner){
+    private void execute(AfterInsert actioner){
         
         SObject[] scope = new SObject[]{};
         
@@ -306,7 +293,7 @@ public virtual class Tiger {
             actioner.processAi(scope);
     }
 
-    private static void execute(BeforeUpdate actioner){
+    private void execute(BeforeUpdate actioner){
 
         SObject[] scope = new SObject[]{};
         
@@ -320,7 +307,7 @@ public virtual class Tiger {
             actioner.processBu(scope);
     }
 
-    private static void execute(AfterUpdate actioner){
+    private void execute(AfterUpdate actioner){
 
         SObject[] scope = new SObject[]{};
         
@@ -334,7 +321,7 @@ public virtual class Tiger {
             actioner.processAu(scope);
     }
 
-    private static void execute(BeforeDelete actioner){
+    private void execute(BeforeDelete actioner){
 
         SObject[] scope = new SObject[]{};
         
@@ -348,7 +335,7 @@ public virtual class Tiger {
             actioner.processBd(scope);
     }
 
-    private static void execute(AfterDelete actioner){
+    private void execute(AfterDelete actioner){
 
         SObject[] scope = new SObject[]{};
         
@@ -362,7 +349,7 @@ public virtual class Tiger {
             actioner.processAd(scope);
     }
 
-    private static void execute(AfterUndelete actioner){
+    private void execute(AfterUndelete actioner){
 
         SObject[] scope = new SObject[]{};
         
@@ -376,7 +363,7 @@ public virtual class Tiger {
             actioner.processAud(scope);
     }
 
-    private static Boolean hasSkipTigerCustomPermission(){
+    private Boolean hasSkipTigerCustomPermission(){
 
         String skipAll = 'SKIP_TIGER_ALL';
 
@@ -385,7 +372,7 @@ public virtual class Tiger {
         return FeatureManagement.checkPermission(skipAll) || FeatureManagement.checkPermission(skipCurrentSObject);
     }
 
-    private static Boolean skipActioner(Actioner actioner){
+    private Boolean skipActioner(Actioner actioner){
 
         if(actioner instanceof Skipable){
 
