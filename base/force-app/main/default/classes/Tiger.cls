@@ -51,12 +51,10 @@ public virtual class Tiger {
     public interface Skipable{
         String customPermissionName();
     }
-
     public interface BeforeInsert extends Actioner{
         boolean inScopeBi(SObject newRecord);
         void processBi(SObject[] scope);
     }
-
     public interface AfterInsert extends Actioner{
         boolean inScopeAi(SObject newRecord);
         void processAi(SObject[] scope);
@@ -77,7 +75,6 @@ public virtual class Tiger {
         boolean inScopeAd(SObject oldRecord);
         void processAd(SObject[] scope);
     }
-   
     public interface AfterUndelete extends Actioner{
         boolean inScopeAud(SObject newRecord);
         void processAud(SObject[] scope);
