@@ -24,6 +24,9 @@
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
 public virtual class Tiger {
+
+    private String context;
+    private Boolean allowSkipTiger;
     
     private static Set<String> contextsAlreadyRunBi = new Set<String>();
     private static Set<String> contextsAlreadyRunAi = new Set<String>();
@@ -32,8 +35,6 @@ public virtual class Tiger {
     private static Set<String> contextsAlreadyRunBd = new Set<String>();
     private static Set<String> contextsAlreadyRunAd = new Set<String>();
     private static Set<String> contextsAlreadyRunAud = new Set<String>();
-
-    private String context;
     
     private List<BeforeInsert> actionersBi = new List<BeforeInsert>();
     private List<AfterInsert> actionersAi = new List<AfterInsert>();
@@ -84,17 +85,19 @@ public virtual class Tiger {
 
     public Tiger(String[] actionerClasses){
 
-        this(actionerClasses, getSObjectName());
+        this(actionerClasses, getSObjectName(), true);
     }
 
     public Tiger(Actioner[] actioners){
 
-        this(actioners, getSObjectName());
+        this(actioners, getSObjectName(), true);
     }
 
-    public Tiger(String[] actionerClasses, String context){
+    public Tiger(String[] actionerClasses, String context, Boolean allowSkipTiger){
 
         this.context = context;
+
+        this.allowSkipTiger = allowSkipTiger;
 
         for(String actionerClass : actionerClasses){
 
@@ -104,9 +107,11 @@ public virtual class Tiger {
         }
     }
 
-    public Tiger(Actioner[] actioners, String context){
+    public Tiger(Actioner[] actioners, String context,  Boolean allowSkipTiger){
 
         this.context = context;
+
+        this.allowSkipTiger = allowSkipTiger;
 
         for(Actioner actioner : actioners){
             
@@ -364,7 +369,7 @@ public virtual class Tiger {
 
         String skipCurrentSObject = 'SKIP_TIGER_' + getSObjectName();
 
-        return FeatureManagement.checkPermission(skipAll) || FeatureManagement.checkPermission(skipCurrentSObject);
+        return this.allowSkipTiger && (FeatureManagement.checkPermission(skipAll) || FeatureManagement.checkPermission(skipCurrentSObject));
     }
 
     private Boolean skipActioner(Actioner actioner){
