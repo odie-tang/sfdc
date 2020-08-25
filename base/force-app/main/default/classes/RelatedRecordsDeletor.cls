@@ -23,7 +23,7 @@
  *  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
-public with sharing class RelatedRecordsDeletor implements TigerLight.BeforeDelete{
+public with sharing class RelatedRecordsDeletor{
     
     private String[] childRelateshipNames;
 
@@ -37,12 +37,7 @@ public with sharing class RelatedRecordsDeletor implements TigerLight.BeforeDele
         this.childRelateshipNames = childRelateshipNames;
     }
 
-    public boolean isInScopeBd(SObject newRecord){
-
-        return true;
-    }
-
-    public void handleBd(SObject[] recordsInScope){
+    public void deleteChildren(SObject[] parents){
 
         String soql = 'SELECT Id';
 
@@ -51,17 +46,15 @@ public with sharing class RelatedRecordsDeletor implements TigerLight.BeforeDele
             soql += ', (SELECT Id FROM ' + childRenaltionshipName + ')';
         }
 
-        soql += ' FROM ' + TigerLight.getSObjectName() + ' WHERE Id IN:recordsInScope';
+        soql += ' FROM ' + parents.getSObjectType().getDescribe().getName() + ' WHERE Id IN:parents';
 
-        sObject[] records = Database.query(soql);
+        List<SObject> toBeDeleted = new List<SObject>();
 
-        List<sObject> toBeDeleted = new List<SObject>();
-
-        for(sObject parentRecord : records){
+        for(SObject parent : Database.query(soql)){
 
             for(String childRenaltionshipName : childRelateshipNames){
 
-                sObject[] children = parentRecord.getSObjects(childRenaltionshipName);
+                SObject[] children = parent.getSObjects(childRenaltionshipName);
 
                 if(children != null)
                     toBeDeleted.addAll(children);
