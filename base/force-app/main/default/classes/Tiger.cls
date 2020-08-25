@@ -161,6 +161,8 @@ public virtual class Tiger {
 
         if(trigger.isBefore && trigger.isInsert){
 
+            System.debug('Executing before insert trigger for ' + getSObjectName());
+
             for(BeforeInsert actioner : actionersBi){
             
                 Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBi.contains(context)) && !skipActioner(actioner);
@@ -175,6 +177,8 @@ public virtual class Tiger {
     private void executeBeforeUpdate(){
 
         if(trigger.isBefore && trigger.isUpdate){
+
+            System.debug('Executing before update trigger for ' + getSObjectName());
                 
             for(BeforeUpdate actioner : actionersBu){
 
@@ -191,6 +195,8 @@ public virtual class Tiger {
 
         if(trigger.isBefore && trigger.isDelete){
 
+            System.debug('Executing before delete trigger for ' + getSObjectName());
+
             for(BeforeDelete actioner : actionersBd){
 
                 Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBd.contains(context)) && !skipActioner(actioner);
@@ -205,6 +211,8 @@ public virtual class Tiger {
     private void executeAfterInsert(){
 
         if(trigger.isAfter && trigger.isInsert){
+
+            System.debug('Executing after insert trigger for ' + getSObjectName());
 
             for(AfterInsert actioner : actionersAi){
 
@@ -221,6 +229,8 @@ public virtual class Tiger {
 
         if(trigger.isAfter && trigger.isUpdate){
 
+            System.debug('Executing after update trigger for ' + getSObjectName());
+
             for(AfterUpdate actioner : actionersAu){
 
                 Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAu.contains(context)) && !skipActioner(actioner);
@@ -236,6 +246,8 @@ public virtual class Tiger {
 
         if(trigger.isAfter && trigger.isDelete){
 
+            System.debug('Executing after delete trigger for ' + getSObjectName());
+
             for(AfterDelete actioner : actionersAd){
 
                 Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAd.contains(context)) && !skipActioner(actioner);
@@ -250,6 +262,8 @@ public virtual class Tiger {
     private void executeAfterUndelete(){
 
         if(trigger.isAfter && trigger.isUndelete){
+
+            System.debug('Executing after undelete trigger for ' + getSObjectName());
 
             for(AfterUndelete actioner : actionersAud){
 
