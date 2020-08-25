@@ -49,7 +49,7 @@ public virtual class Tiger {
     public interface Actioner{}
 
     public interface Skipable{
-        String customPermissionName();
+        String customPermission();
     }
     public interface BeforeInsert extends Actioner{
         boolean inScopeBi(SObject newRecord);
@@ -389,7 +389,7 @@ public virtual class Tiger {
 
             Skipable skipable = (Skipable)actioner;
 
-            return FeatureManagement.checkPermission(skipable.customPermissionName());
+            return FeatureManagement.checkPermission(skipable.customPermission());
         }
 
         return false;
