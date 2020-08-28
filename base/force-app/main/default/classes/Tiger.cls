@@ -144,137 +144,138 @@ public virtual class Tiger {
     public void fire(){
 
         if(hasSkipTigerCustomPermission()) return;
-        
-        executeBeforeInsert();
 
-        executeBeforeUpdate();
+        if(trigger.isBefore){
+            
+            if(trigger.isInsert){
 
-        executeBeforeDelete();
+                executeBeforeInsert();
+            }
+            else if(trigger.isUpdate){
 
-        executeAfterInsert();
+                executeBeforeUpdate();
+            }
+            else if(trigger.isDelete){
 
-        executeAfterUpdate();
+                executeBeforeDelete();
+            }
+        }
+        else{
+            if(trigger.isInsert){
+                
+                executeAfterInsert();
+            }
+            else if(trigger.isUpdate){
+                
+                executeAfterUpdate();
+            }
+            else if(trigger.isDelete){
+                
+                executeAfterDelete();
+            }
+            else if(trigger.isUndelete){
 
-        executeAfterUndelete();
+                executeAfterUndelete();
+            }
+        }
     }
 
     private void executeBeforeInsert(){
 
-        if(trigger.isBefore && trigger.isInsert){
-
-            System.debug('Executing before insert trigger for ' + getSObjectName());
-
-            for(BeforeInsert actioner : actionersBi){
+        System.debug('Executing before insert trigger for ' + getSObjectName());
+        
+        for(BeforeInsert actioner : actionersBi){
+        
+            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBi.contains(context)) && !skipActioner(actioner);
             
-                Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBi.contains(context)) && !skipActioner(actioner);
-                
-                if(isExecutable) execute(actioner);
-            }
-            
-            contextsAlreadyRunBi.add(context);
+            if(isExecutable) execute(actioner);
         }
+        
+        contextsAlreadyRunBi.add(context);
     }
 
     private void executeBeforeUpdate(){
 
-        if(trigger.isBefore && trigger.isUpdate){
+        System.debug('Executing before update trigger for ' + getSObjectName());
+            
+        for(BeforeUpdate actioner : actionersBu){
 
-            System.debug('Executing before update trigger for ' + getSObjectName());
-                
-            for(BeforeUpdate actioner : actionersBu){
+            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBu.contains(context)) && !skipActioner(actioner);
 
-                Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBu.contains(context)) && !skipActioner(actioner);
-
-                if(isExecutable) execute(actioner);
-            }
-
-            contextsAlreadyRunBu.add(context);
+            if(isExecutable) execute(actioner);
         }
+
+        contextsAlreadyRunBu.add(context);
     }
 
     private void executeBeforeDelete(){
 
-        if(trigger.isBefore && trigger.isDelete){
+        System.debug('Executing before delete trigger for ' + getSObjectName());
 
-            System.debug('Executing before delete trigger for ' + getSObjectName());
+        for(BeforeDelete actioner : actionersBd){
 
-            for(BeforeDelete actioner : actionersBd){
+            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBd.contains(context)) && !skipActioner(actioner);
 
-                Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBd.contains(context)) && !skipActioner(actioner);
-
-                if(isExecutable) execute(actioner);
-            }
-
-            contextsAlreadyRunBd.add(context);
+            if(isExecutable) execute(actioner);
         }
+
+        contextsAlreadyRunBd.add(context);
     }
     
     private void executeAfterInsert(){
 
-        if(trigger.isAfter && trigger.isInsert){
+        System.debug('Executing after insert trigger for ' + getSObjectName());
 
-            System.debug('Executing after insert trigger for ' + getSObjectName());
+        for(AfterInsert actioner : actionersAi){
 
-            for(AfterInsert actioner : actionersAi){
+            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAi.contains(context)) && !skipActioner(actioner);
 
-                Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAi.contains(context)) && !skipActioner(actioner);
-
-                if(isExecutable) execute(actioner);
-            }
-
-            contextsAlreadyRunAi.add(context);
+            if(isExecutable) execute(actioner);
         }
+
+        contextsAlreadyRunAi.add(context);
     }
     
     private void executeAfterUpdate(){
 
-        if(trigger.isAfter && trigger.isUpdate){
+        System.debug('Executing after update trigger for ' + getSObjectName());
 
-            System.debug('Executing after update trigger for ' + getSObjectName());
+        for(AfterUpdate actioner : actionersAu){
 
-            for(AfterUpdate actioner : actionersAu){
+            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAu.contains(context)) && !skipActioner(actioner);
 
-                Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAu.contains(context)) && !skipActioner(actioner);
-
-                if(isExecutable) execute(actioner);
-            }
-
-            contextsAlreadyRunAu.add(context);
+            if(isExecutable) execute(actioner);
         }
+
+        contextsAlreadyRunAu.add(context);
     }
     
     private void executeAfterDelete(){
 
-        if(trigger.isAfter && trigger.isDelete){
+        System.debug('Executing after delete trigger for ' + getSObjectName());
 
-            System.debug('Executing after delete trigger for ' + getSObjectName());
+        for(AfterDelete actioner : actionersAd){
 
-            for(AfterDelete actioner : actionersAd){
+            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAd.contains(context)) && !skipActioner(actioner);
 
-                Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAd.contains(context)) && !skipActioner(actioner);
-
-                if(isExecutable) execute(actioner);
-            }
-
-            contextsAlreadyRunAd.add(context);
+            if(isExecutable) execute(actioner);
         }
+
+        contextsAlreadyRunAd.add(context);
     }
 
     private void executeAfterUndelete(){
 
-        if(trigger.isAfter && trigger.isUndelete){
+        System.debug('Executing after undelete trigger for ' + getSObjectName());
 
-            System.debug('Executing after undelete trigger for ' + getSObjectName());
+        for(AfterUndelete actioner : actionersAud){
 
-            for(AfterUndelete actioner : actionersAud){
+            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAud.contains(context)) && !skipActioner(actioner);
 
-                Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAud.contains(context)) && !skipActioner(actioner);
-
-                if(isExecutable) execute(actioner);
-            }
-
-            contextsAlreadyRunAud.add(context);
+            if(isExecutable) execute(actioner);
         }
+
+        contextsAlreadyRunAud.add(context);
     }
 
     private void execute(BeforeInsert actioner){
