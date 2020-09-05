@@ -181,28 +181,27 @@ global virtual class Tiger {
     }
 
     private void executeBeforeInsert(){
-
+        
         System.debug('Executing before insert trigger for ' + getSObjectName());
-        
-        for(BeforeInsert actioner : actionersBi){
-        
-            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunBi)) && !skipActioner(actioner);
-            
-            if(isExecutable) execute(actioner);
-        }
-        
-        markAlreadyRun(contextsAlreadyRunBi);
-    }
 
+        for(BeforeInsert actioner : actionersBi){
+
+            if(isExecutable(actioner, contextsAlreadyRunBi))
+                execute(actioner);
+        }
+
+        markAlreadyRun(contextsAlreadyRunBi);
+        
+    }
+    
     private void executeBeforeUpdate(){
 
         System.debug('Executing before update trigger for ' + getSObjectName());
             
         for(BeforeUpdate actioner : actionersBu){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunBu)) && !skipActioner(actioner);
-
-            if(isExecutable) execute(actioner);
+            if(isExecutable(actioner, contextsAlreadyRunBu))
+                execute(actioner);
         }
 
         markAlreadyRun(contextsAlreadyRunBu);
@@ -214,9 +213,8 @@ global virtual class Tiger {
 
         for(BeforeDelete actioner : actionersBd){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunBd)) && !skipActioner(actioner);
-
-            if(isExecutable) execute(actioner);
+            if(isExecutable(actioner, contextsAlreadyRunBd))
+                execute(actioner);
         }
 
         markAlreadyRun(contextsAlreadyRunBd);
@@ -228,9 +226,8 @@ global virtual class Tiger {
 
         for(AfterInsert actioner : actionersAi){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunAi)) && !skipActioner(actioner);
-
-            if(isExecutable) execute(actioner);
+            if(isExecutable(actioner, contextsAlreadyRunAi))
+                execute(actioner);
         }
 
         markAlreadyRun(contextsAlreadyRunAi);
@@ -242,9 +239,8 @@ global virtual class Tiger {
 
         for(AfterUpdate actioner : actionersAu){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunAu)) && !skipActioner(actioner);
-
-            if(isExecutable) execute(actioner);
+            if(isExecutable(actioner, contextsAlreadyRunAu))
+                execute(actioner);
         }
 
         markAlreadyRun(contextsAlreadyRunAu);
@@ -256,9 +252,8 @@ global virtual class Tiger {
 
         for(AfterDelete actioner : actionersAd){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunAd)) && !skipActioner(actioner);
-
-            if(isExecutable) execute(actioner);
+            if(isExecutable(actioner, contextsAlreadyRunAd))
+                execute(actioner);
         }
 
         markAlreadyRun(contextsAlreadyRunAd);
@@ -270,9 +265,8 @@ global virtual class Tiger {
 
         for(AfterUndelete actioner : actionersAud){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunAud)) && !skipActioner(actioner);
-
-            if(isExecutable) execute(actioner);
+            if(isExecutable(actioner, contextsAlreadyRunAud))
+                execute(actioner);
         }
 
         markAlreadyRun(contextsAlreadyRunAud);
@@ -374,6 +368,11 @@ global virtual class Tiger {
 
         if(!scope.isEmpty())
             actioner.processAud(scope);
+    }
+
+    private Boolean isExecutable(Actioner actioner, Map<String, Set<String>> contextAlreadyRun){
+
+        return ((actioner instanceof Recursive) || !alreadyRun(contextAlreadyRun)) && !skipActioner(actioner);
     }
 
     private Boolean alreadyRun(Map<String, Set<String>> contextAlreadyRun){
