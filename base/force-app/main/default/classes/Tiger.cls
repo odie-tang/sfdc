@@ -23,18 +23,18 @@
  *  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
-public virtual class Tiger {
+global virtual class Tiger {
 
     private String context;
     private Boolean allowSkipTiger = true;
     
-    private static Set<String> contextsAlreadyRunBi = new Set<String>();
-    private static Set<String> contextsAlreadyRunAi = new Set<String>();
-    private static Set<String> contextsAlreadyRunBu = new Set<String>();
-    private static Set<String> contextsAlreadyRunAu = new Set<String>();
-    private static Set<String> contextsAlreadyRunBd = new Set<String>();
-    private static Set<String> contextsAlreadyRunAd = new Set<String>();
-    private static Set<String> contextsAlreadyRunAud = new Set<String>();
+    private static Map<String, Set<String>> contextsAlreadyRunBi  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAi  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunBu  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAu  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunBd  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAd  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAud = new Map<String, Set<String>>();
     
     private List<BeforeInsert> actionersBi = new List<BeforeInsert>();
     private List<AfterInsert> actionersAi = new List<AfterInsert>();
@@ -44,55 +44,43 @@ public virtual class Tiger {
     private List<AfterDelete> actionersAd = new List<AfterDelete>();
     private List<AfterUndelete> actionersAud = new List<AfterUndelete>();
 
-    public interface Recursive{}
+    global interface Recursive{}
 
-    public interface Actioner{}
+    global interface Actioner{}
 
-    public interface Skipable{
+    global interface Skipable{
         String customPermission();
     }
-    public interface BeforeInsert extends Actioner{
+    global interface BeforeInsert extends Actioner{
         boolean inScopeBi(SObject newRecord);
         void processBi(SObject[] scope);
     }
-    public interface AfterInsert extends Actioner{
+    global interface AfterInsert extends Actioner{
         boolean inScopeAi(SObject newRecord);
         void processAi(SObject[] scope);
     }
-    public interface BeforeUpdate extends Actioner{
+    global interface BeforeUpdate extends Actioner{
         boolean inScopeBu(SObject newRecord);
         void processBu(SObject[] scope);
     }
-    public interface AfterUpdate extends Actioner{
+    global interface AfterUpdate extends Actioner{
         boolean inScopeAu(SObject newRecord);
         void processAu(SObject[] scope);
     }
-    public interface BeforeDelete extends Actioner{
+    global interface BeforeDelete extends Actioner{
         boolean inScopeBd(SObject oldRecord);
         void processBd(SObject[] scope);
     }
-    public interface AfterDelete extends Actioner{
+    global interface AfterDelete extends Actioner{
         boolean inScopeAd(SObject oldRecord);
         void processAd(SObject[] scope);
     }
-    public interface AfterUndelete extends Actioner{
+    global interface AfterUndelete extends Actioner{
         boolean inScopeAud(SObject newRecord);
         void processAud(SObject[] scope);
     }
 
-    public Tiger(String[] actionerClasses){
-
-        this(actionerClasses, getSObjectName());
-    }
-
-    public Tiger(Actioner[] actioners){
-
-        this(actioners, getSObjectName());
-    }
-
-    public Tiger(String[] actionerClasses, String context){
-
-        this.context = context;
+    global Tiger(String[] actionerClasses){
 
         for(String actionerClass : actionerClasses){
 
@@ -102,14 +90,26 @@ public virtual class Tiger {
         }
     }
 
-    public Tiger(Actioner[] actioners, String context){
-
-        this.context = context;
+    global Tiger(Actioner[] actioners){
 
         for(Actioner actioner : actioners){
             
             addActioner(actioner);
         }
+    }
+
+    global Tiger(String[] actionerClasses, String context){
+
+        this(actionerClasses);
+
+        this.context = context;        
+    }
+
+    global Tiger(Actioner[] actioners, String context){
+
+        this(actioners);
+
+        this.context = context;
     }
 
     private void addActioner(Actioner actioner){
@@ -136,12 +136,12 @@ public virtual class Tiger {
             actionersAud.add((AfterUndelete)actioner);
     }
 
-    public void disallowSkipTiger(){
+    global void disallowSkipTiger(){
 
         this.allowSkipTiger = false;
     }
 
-    public void fire(){
+    global void fire(){
 
         if(hasSkipTigerCustomPermission()) return;
 
@@ -186,12 +186,12 @@ public virtual class Tiger {
         
         for(BeforeInsert actioner : actionersBi){
         
-            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBi.contains(context)) && !skipActioner(actioner);
+            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunBi)) && !skipActioner(actioner);
             
             if(isExecutable) execute(actioner);
         }
         
-        contextsAlreadyRunBi.add(context);
+        markAlreadyRun(contextsAlreadyRunBi);
     }
 
     private void executeBeforeUpdate(){
@@ -200,12 +200,12 @@ public virtual class Tiger {
             
         for(BeforeUpdate actioner : actionersBu){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBu.contains(context)) && !skipActioner(actioner);
+            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunBu)) && !skipActioner(actioner);
 
             if(isExecutable) execute(actioner);
         }
 
-        contextsAlreadyRunBu.add(context);
+        markAlreadyRun(contextsAlreadyRunBu);
     }
 
     private void executeBeforeDelete(){
@@ -214,12 +214,12 @@ public virtual class Tiger {
 
         for(BeforeDelete actioner : actionersBd){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunBd.contains(context)) && !skipActioner(actioner);
+            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunBd)) && !skipActioner(actioner);
 
             if(isExecutable) execute(actioner);
         }
 
-        contextsAlreadyRunBd.add(context);
+        markAlreadyRun(contextsAlreadyRunBd);
     }
     
     private void executeAfterInsert(){
@@ -228,12 +228,12 @@ public virtual class Tiger {
 
         for(AfterInsert actioner : actionersAi){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAi.contains(context)) && !skipActioner(actioner);
+            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunAi)) && !skipActioner(actioner);
 
             if(isExecutable) execute(actioner);
         }
 
-        contextsAlreadyRunAi.add(context);
+        markAlreadyRun(contextsAlreadyRunAi);
     }
     
     private void executeAfterUpdate(){
@@ -242,12 +242,12 @@ public virtual class Tiger {
 
         for(AfterUpdate actioner : actionersAu){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAu.contains(context)) && !skipActioner(actioner);
+            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunAu)) && !skipActioner(actioner);
 
             if(isExecutable) execute(actioner);
         }
 
-        contextsAlreadyRunAu.add(context);
+        markAlreadyRun(contextsAlreadyRunAu);
     }
     
     private void executeAfterDelete(){
@@ -256,12 +256,12 @@ public virtual class Tiger {
 
         for(AfterDelete actioner : actionersAd){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAd.contains(context)) && !skipActioner(actioner);
+            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunAd)) && !skipActioner(actioner);
 
             if(isExecutable) execute(actioner);
         }
 
-        contextsAlreadyRunAd.add(context);
+        markAlreadyRun(contextsAlreadyRunAd);
     }
 
     private void executeAfterUndelete(){
@@ -270,12 +270,12 @@ public virtual class Tiger {
 
         for(AfterUndelete actioner : actionersAud){
 
-            Boolean isExecutable = ((actioner instanceof Recursive) || !contextsAlreadyRunAud.contains(context)) && !skipActioner(actioner);
+            Boolean isExecutable = ((actioner instanceof Recursive) || !alreadyRun(contextsAlreadyRunAud)) && !skipActioner(actioner);
 
             if(isExecutable) execute(actioner);
         }
 
-        contextsAlreadyRunAud.add(context);
+        markAlreadyRun(contextsAlreadyRunAud);
     }
 
     private void execute(BeforeInsert actioner){
@@ -376,9 +376,37 @@ public virtual class Tiger {
             actioner.processAud(scope);
     }
 
+    private Boolean alreadyRun(Map<String, Set<String>> contextAlreadyRun){
+
+        String sObjectName = getSObjectName();
+
+        if(!contextAlreadyRun.containsKey(sObjectName)){
+
+            return false;
+        }
+        else{
+
+            return contextAlreadyRun.get(sObjectName).contains(context);
+        }
+    }
+
+    private void markAlreadyRun(Map<String, Set<String>> contextAlreadyRun){
+
+        String sObjectName = getSObjectName();
+
+        if(!contextAlreadyRun.containsKey(sObjectName)){
+
+            contextAlreadyRun.put(sObjectName, new Set<String>());
+        }
+
+        contextAlreadyRun.get(sObjectName).add(context);
+    }
+
     private Boolean hasSkipTigerCustomPermission(){
 
-        String customPermissionToSkip = 'SKIP_TIGER_' + context;
+        String customPermissionBase = 'SKIP_TIGER_' + getSObjectName();
+
+        String customPermissionToSkip =  context == null ? customPermissionBase : customPermissionBase + '_' + context;
 
         return this.allowSkipTiger && FeatureManagement.checkPermission(customPermissionToSkip);
     }
