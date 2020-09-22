@@ -145,7 +145,7 @@ global virtual class Tiger {
 
     global void fire(){
 
-        if(hasSkipTigerCustomPermission()) return;
+        if(this.allowSkipTiger && hasSkipTigerCustomPermission()) return;
 
         if(trigger.isBefore){
             
@@ -409,7 +409,7 @@ global virtual class Tiger {
 
         String customPermissionToSkip =  context == null ? customPermissionBase : customPermissionBase + '_' + context;
 
-        return this.allowSkipTiger && FeatureManagement.checkPermission(customPermissionToSkip);
+        return FeatureManagement.checkPermission(customPermissionToSkip);
     }
 
     private Boolean skipActioner(Actioner actioner){
