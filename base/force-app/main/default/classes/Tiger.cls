@@ -185,93 +185,184 @@ global virtual class Tiger {
     private void executeBeforeInsert(){
         
         System.debug('Executing before insert trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunBi)){
 
-        for(BeforeInsert actioner : actionersBi){
+            for(BeforeInsert actioner : actionersBi){
+                
+                if(isReExecutable(actioner)){
 
-            if(isExecutable(actioner, contextsAlreadyRunBi))
-                execute(actioner);
+                    execute(actioner);
+                }
+            }
         }
+        else{
 
-        markAlreadyRun(contextsAlreadyRunBi);
+            markAlreadyRun(contextsAlreadyRunBi);
+
+            for(BeforeInsert actioner : actionersBi){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
         
     }
     
     private void executeBeforeUpdate(){
 
         System.debug('Executing before update trigger for ' + getSObjectName());
-            
-        for(BeforeUpdate actioner : actionersBu){
 
-            if(isExecutable(actioner, contextsAlreadyRunBu))
-                execute(actioner);
+        if(alreadyRun(contextsAlreadyRunBu)){
+
+            for(BeforeUpdate actioner : actionersBu){
+                
+                if(isReExecutable(actioner)){
+
+                    execute(actioner);
+                }
+            }
         }
+        else{
 
-        markAlreadyRun(contextsAlreadyRunBu);
+            markAlreadyRun(contextsAlreadyRunBu);
+
+            for(BeforeUpdate actioner : actionersBu){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
     }
 
     private void executeBeforeDelete(){
 
         System.debug('Executing before delete trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunBd)){
 
-        for(BeforeDelete actioner : actionersBd){
+            for(BeforeDelete actioner : actionersBd){
+                
+                if(isReExecutable(actioner)){
 
-            if(isExecutable(actioner, contextsAlreadyRunBd))
-                execute(actioner);
+                    execute(actioner);
+                }
+            }
         }
+        else{
 
-        markAlreadyRun(contextsAlreadyRunBd);
+            markAlreadyRun(contextsAlreadyRunBd);
+
+            for(BeforeDelete actioner : actionersBd){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
     }
     
     private void executeAfterInsert(){
 
         System.debug('Executing after insert trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunAi)){
 
-        for(AfterInsert actioner : actionersAi){
+            for(AfterInsert actioner : actionersAi){
+                
+                if(isReExecutable(actioner)){
 
-            if(isExecutable(actioner, contextsAlreadyRunAi))
-                execute(actioner);
+                    execute(actioner);
+                }
+            }
         }
+        else{
 
-        markAlreadyRun(contextsAlreadyRunAi);
+            markAlreadyRun(contextsAlreadyRunAi);
+
+            for(AfterInsert actioner : actionersAi){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
     }
     
     private void executeAfterUpdate(){
 
         System.debug('Executing after update trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunAu)){
 
-        for(AfterUpdate actioner : actionersAu){
+            for(AfterUpdate actioner : actionersAu){
+                
+                if(isReExecutable(actioner)){
 
-            if(isExecutable(actioner, contextsAlreadyRunAu))
-                execute(actioner);
+                    execute(actioner);
+                }
+            }
         }
+        else{
 
-        markAlreadyRun(contextsAlreadyRunAu);
+            markAlreadyRun(contextsAlreadyRunAu);
+
+            for(AfterUpdate actioner : actionersAu){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
     }
     
     private void executeAfterDelete(){
 
         System.debug('Executing after delete trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunAd)){
 
-        for(AfterDelete actioner : actionersAd){
+            for(AfterDelete actioner : actionersAd){
+                
+                if(isReExecutable(actioner)){
 
-            if(isExecutable(actioner, contextsAlreadyRunAd))
-                execute(actioner);
+                    execute(actioner);
+                }
+            }
         }
+        else{
 
-        markAlreadyRun(contextsAlreadyRunAd);
+            markAlreadyRun(contextsAlreadyRunAd);
+
+            for(AfterDelete actioner : actionersAd){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
     }
 
     private void executeAfterUndelete(){
 
         System.debug('Executing after undelete trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunAud)){
 
-        for(AfterUndelete actioner : actionersAud){
+            for(AfterUndelete actioner : actionersAud){
+                
+                if(isReExecutable(actioner)){
 
-            if(isExecutable(actioner, contextsAlreadyRunAud))
-                execute(actioner);
+                    execute(actioner);
+                }
+            }
         }
+        else{
 
-        markAlreadyRun(contextsAlreadyRunAud);
+            markAlreadyRun(contextsAlreadyRunAud);
+
+            for(AfterUndelete actioner : actionersAud){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
     }
 
     private void execute(BeforeInsert actioner){
@@ -372,9 +463,9 @@ global virtual class Tiger {
             actioner.processAud(scope);
     }
 
-    private Boolean isExecutable(Actioner actioner, Map<String, Set<String>> contextAlreadyRun){
+    private Boolean isReExecutable(Actioner actioner){
 
-        return ((actioner instanceof Recursive) || !alreadyRun(contextAlreadyRun)) && !skipActioner(actioner);
+        return (actioner instanceof Recursive) && !skipActioner(actioner);
     }
 
     private Boolean alreadyRun(Map<String, Set<String>> contextAlreadyRun){
@@ -407,7 +498,7 @@ global virtual class Tiger {
 
         String customPermissionBase = 'SKIP_TIGER_' + getSObjectName();
 
-        String customPermissionToSkip =  context == null ? customPermissionBase : customPermissionBase + '_' + context;
+        String customPermissionToSkip = context == null ? customPermissionBase : customPermissionBase + '_' + context;
 
         return FeatureManagement.checkPermission(customPermissionToSkip);
     }
