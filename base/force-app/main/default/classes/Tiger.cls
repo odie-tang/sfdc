@@ -25,7 +25,7 @@
  *  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
-global virtual class Tiger {
+public virtual class Tiger {
 
     private String context;
     private Boolean allowSkipTiger = true;
@@ -46,43 +46,43 @@ global virtual class Tiger {
     private List<AfterDelete> actionersAd = new List<AfterDelete>();
     private List<AfterUndelete> actionersAud = new List<AfterUndelete>();
 
-    global interface Recursive{}
+    public interface Recursive{}
 
-    global interface Actioner{}
+    public interface Actioner{}
 
-    global interface Skipable{
+    public interface Skipable{
         String customPermission();
     }
-    global interface BeforeInsert extends Actioner{
-        boolean inScopeBi(SObject newRecord);
-        void processBi(SObject[] scope);
+    public interface BeforeInsert extends Actioner{
+        boolean inScopeBeforeInsert(SObject newRecord);
+        void processBeforeInsert(SObject[] scope);
     }
-    global interface AfterInsert extends Actioner{
-        boolean inScopeAi(SObject newRecord);
-        void processAi(SObject[] scope);
+    public interface AfterInsert extends Actioner{
+        boolean inScopeAfterInsert(SObject newRecord);
+        void processAfterInsert(SObject[] scope);
     }
-    global interface BeforeUpdate extends Actioner{
-        boolean inScopeBu(SObject newRecord);
-        void processBu(SObject[] scope);
+    public interface BeforeUpdate extends Actioner{
+        boolean inScopeBeforeUpdate(SObject newRecord);
+        void processBeforeUpdate(SObject[] scope);
     }
-    global interface AfterUpdate extends Actioner{
-        boolean inScopeAu(SObject newRecord);
-        void processAu(SObject[] scope);
+    public interface AfterUpdate extends Actioner{
+        boolean inScopeAfterUpdate(SObject newRecord);
+        void processAfterUpdate(SObject[] scope);
     }
-    global interface BeforeDelete extends Actioner{
-        boolean inScopeBd(SObject oldRecord);
-        void processBd(SObject[] scope);
+    public interface BeforeDelete extends Actioner{
+        boolean inScopeBeforeDelete(SObject oldRecord);
+        void processBeforeDelete(SObject[] scope);
     }
-    global interface AfterDelete extends Actioner{
-        boolean inScopeAd(SObject oldRecord);
-        void processAd(SObject[] scope);
+    public interface AfterDelete extends Actioner{
+        boolean inScopeAfterDelete(SObject oldRecord);
+        void processAfterDelete(SObject[] scope);
     }
-    global interface AfterUndelete extends Actioner{
-        boolean inScopeAud(SObject newRecord);
-        void processAud(SObject[] scope);
+    public interface AfterUndelete extends Actioner{
+        boolean inScopeAfterUndelete(SObject newRecord);
+        void processAfterUndelete(SObject[] scope);
     }
 
-    global Tiger(String[] actionerClasses){
+    public Tiger(String[] actionerClasses){
 
         for(String actionerClass : actionerClasses){
 
@@ -92,7 +92,7 @@ global virtual class Tiger {
         }
     }
 
-    global Tiger(Actioner[] actioners){
+    public Tiger(Actioner[] actioners){
 
         for(Actioner actioner : actioners){
             
@@ -100,14 +100,14 @@ global virtual class Tiger {
         }
     }
 
-    global Tiger(String[] actionerClasses, String context){
+    public Tiger(String[] actionerClasses, String context){
 
         this(actionerClasses);
 
         this.context = context;        
     }
 
-    global Tiger(Actioner[] actioners, String context){
+    public Tiger(Actioner[] actioners, String context){
 
         this(actioners);
 
@@ -138,12 +138,14 @@ global virtual class Tiger {
             actionersAud.add((AfterUndelete)actioner);
     }
 
-    global void disallowSkipTiger(){
+    public Tiger turnOffSkipTiger(){
 
         this.allowSkipTiger = false;
+
+        return this;
     }
 
-    global void fire(){
+    public void fire(){
 
         if(this.allowSkipTiger && hasSkipTigerCustomPermission()) return;
 
@@ -371,12 +373,12 @@ global virtual class Tiger {
         
         for(SObject record : trigger.new){
             
-            if(actioner.inScopeBi(record))
+            if(actioner.inScopeBeforeInsert(record))
                 scope.add(record);
         }
 
         if(!scope.isEmpty())
-            actioner.processBi(scope);
+            actioner.processBeforeInsert(scope);
     }
 
     private void execute(AfterInsert actioner){
@@ -385,12 +387,12 @@ global virtual class Tiger {
         
         for(SObject record : trigger.new){
             
-            if(actioner.inScopeAi(record))
+            if(actioner.inScopeAfterInsert(record))
                 scope.add(record);
         }
 
         if(!scope.isEmpty())
-            actioner.processAi(scope);
+            actioner.processAfterInsert(scope);
     }
 
     private void execute(BeforeUpdate actioner){
@@ -399,12 +401,12 @@ global virtual class Tiger {
         
         for(SObject record : trigger.new){
             
-            if(actioner.inScopeBu(record))
+            if(actioner.inScopeBeforeUpdate(record))
                 scope.add(record);
         }
 
         if(!scope.isEmpty())
-            actioner.processBu(scope);
+            actioner.processBeforeUpdate(scope);
     }
 
     private void execute(AfterUpdate actioner){
@@ -413,12 +415,12 @@ global virtual class Tiger {
         
         for(SObject record : trigger.new){
             
-            if(actioner.inScopeAu(record))
+            if(actioner.inScopeAfterUpdate(record))
                 scope.add(record);
         }
 
         if(!scope.isEmpty())
-            actioner.processAu(scope);
+            actioner.processAfterUpdate(scope);
     }
 
     private void execute(BeforeDelete actioner){
@@ -427,12 +429,12 @@ global virtual class Tiger {
         
         for(SObject record : trigger.old){
             
-            if(actioner.inScopeBd(record))
+            if(actioner.inScopeBeforeDelete(record))
                 scope.add(record);
         }
 
         if(!scope.isEmpty())
-            actioner.processBd(scope);
+            actioner.processBeforeDelete(scope);
     }
 
     private void execute(AfterDelete actioner){
@@ -441,12 +443,12 @@ global virtual class Tiger {
         
         for(SObject record : trigger.old){
             
-            if(actioner.inScopeAd(record))
+            if(actioner.inScopeAfterDelete(record))
                 scope.add(record);
         }
 
         if(!scope.isEmpty())
-            actioner.processAd(scope);
+            actioner.processAfterDelete(scope);
     }
 
     private void execute(AfterUndelete actioner){
@@ -455,12 +457,12 @@ global virtual class Tiger {
         
         for(SObject record : trigger.new){
             
-            if(actioner.inScopeAud(record))
+            if(actioner.inScopeAfterUndelete(record))
                 scope.add(record);
         }
 
         if(!scope.isEmpty())
-            actioner.processAud(scope);
+            actioner.processAfterUndelete(scope);
     }
 
     private Boolean isReExecutable(Actioner actioner){
