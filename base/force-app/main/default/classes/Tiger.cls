@@ -1,4 +1,6 @@
 /**
+ * Blog: https://odietang.blogspot.com/2020/08/introduction-to-tiger.html
+ * 
  * Copyright (c), odie.tang (guihuatang@hotmail.com)
  * All rights reserved.
  *
@@ -23,318 +25,498 @@
  *  OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
  *  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 **/
-
-/**
-* This is an enterprise trigger base that manages the DML actions in a scalable, efficient, flexible and simple way.
-* Tiger is a short name of Trigger. Note: this is not so-called "pattern" - TriggerHandler
-* Advantages: 
-*   1.Each DML action can be self sufficient and independent of each other, which simply scales
-*   2.It is possible to avoid most of the DB queries by caching the records returned by @detailize method at the transaction level
-*   3.The sequence of execution can be defined, and defined at the metadata level - @TriggerActions__mdt
-*   4.The trigger actions can be grouped by sObjects, and then Applications:
-*     e.g. if the Account sObject is shared by 3 Apps - Sales, Service & Market, the actions for each App can be grouped into a single record of TriggerActions__mdt. 
-*     e.g. if a global company uses the Account in its Sales App, and different regions/countries have their own business processes, the region wise trigger actions can be grouped into the same metadata record. 
-*/
 public virtual class Tiger {
 
-    private static Map<String, Integer> sObjectTriggerCounterMap = new Map<String, Integer>();
+    private String context;
+    private Boolean allowSkipTiger = true;
     
-    private static Map<String, List<String>> actions = new Map<String, List<String>>();
-    private static Map<String, List<BeforeInsert>> biActions = new Map<String, List<BeforeInsert>>();
-    private static Map<String, List<AfterInsert>> aiActions = new Map<String, List<AfterInsert>>();
-    private static Map<String, List<BeforeUpdate>> buActions = new Map<String, List<BeforeUpdate>>();
-    private static Map<String, List<AfterUpdate>> auActions = new Map<String, List<AfterUpdate>>();
-    private static Map<String, List<BeforeDelete>> bdActions = new Map<String, List<BeforeDelete>>();
-    private static Map<String, List<AfterDelete>> adActions = new Map<String, List<AfterDelete>>();
-    private static Map<String, List<AfterUndelete>> audActions = new Map<String, List<AfterUndelete>>();
-
-    /**
-    * transaction wise cache of records from DB possibly with parent and child relationships fetched 
-    * thru each individual trigger's @detailize method
-    */
-    private static Map<Id, SObject> cache = new Map<Id, SObject>();
-
-    static{
-
-        fetchAllTriggerActionsMdt();
-    }
-
-    public Tiger(){
-        
-        addTriggerCount();
-    }
-
-    public interface BeforeInsert{
-        boolean isInScopeBi(SObject record);
-        void handleBi(SObject[] recordsInScope);
-    }
-
-    public interface AfterInsert{
-        boolean isInScopeAi(SObject record);
-        void handleAi(SObject[] recordsInScope);
-    }
-    public interface BeforeUpdate{
-        boolean isInScopeBu(SObject record);
-        void handleBu(SObject[] recordsInScope);
-    }
-    public interface AfterUpdate{
-        boolean isInScopeAu(SObject record);
-        void handleAu(SObject[] recordsInScope);
-    }
-    public interface BeforeDelete{
-        boolean isInScopeBd(SObject record);
-        void handleBd(SObject[] recordsInScope);
-    }
-    public interface AfterDelete{
-        boolean isInScopeAd(SObject record);
-        void handleAd(SObject[] recordsInScope);
-    }
-   
-    public interface AfterUndelete{
-        boolean isInScopeAud(SObject record);
-        void handleAud(SObject[] recordsInScope);
-    }
-
-    /**
-    * The trigger actions metadata are fetched once and are grouped by sObject names, and then are cached by Salesforce ever since;
-    * The actions will not be initilized until their sObject's trigger is executed;
-    * It loads maximum 50000 records of TriggerActions__mdt, which is a Salesforce governor limit of custom metadata.
-    * 
-    * A little bit explaination about the TriggerActions__mdt:
-    * The @MasterLabel defines the sObject Name. One sObject may have multiple entries of TriggerActions__mdt; 
-    * The @DeveloperName is unique, and used for ordering the sequence of executions for a specific sObject defined in @MasterLabel;
-    * The @Actions__c is a list of trigger actions that is split by new line character '\\n'; the actions will be executed in the same order as in the @Actions__c field
-    */
-    private static void fetchAllTriggerActionsMdt(){
-
-        TriggerActions__mdt[] triggerActions = [select MasterLabel, DeveloperName, Actions__c from TriggerActions__mdt where Active__c=true order by MasterLabel, DeveloperName limit 50000];
-
-        for(TriggerActions__mdt tas : triggerActions){
-
-            if(!actions.containsKey(tas.MasterLabel))
-                actions.put(tas.MasterLabel, new List<String>());
-
-            actions.get(tas.MasterLabel).addAll(tas.Actions__c.split('\\n'));
-        }
-      
-    }
-
+    private static Map<String, Set<String>> contextsAlreadyRunBi  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAi  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunBu  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAu  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunBd  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAd  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAud = new Map<String, Set<String>>();
     
-    /**
-    * lazy load : init the trigger handler action classes only when the trigger is fired the first time
-    */
-    private static void initCurrentSObjectTriggerActions(){
+    private List<BeforeInsert> actionersBi = new List<BeforeInsert>();
+    private List<AfterInsert> actionersAi = new List<AfterInsert>();
+    private List<BeforeUpdate> actionersBu = new List<BeforeUpdate>();
+    private List<AfterUpdate> actionersAu = new List<AfterUpdate>();
+    private List<BeforeDelete> actionersBd = new List<BeforeDelete>();
+    private List<AfterDelete> actionersAd = new List<AfterDelete>();
+    private List<AfterUndelete> actionersAud = new List<AfterUndelete>();
 
-        String sObjectName = getSObjectName();
+    public interface Recursive{}
 
-        if(!biActions.containsKey(sObjectName)){
-            biActions.put(sObjectName, new List<BeforeInsert>());
-            aiActions.put(sObjectName, new List<AfterInsert>());
-            buActions.put(sObjectName, new List<BeforeUpdate>());
-            auActions.put(sObjectName, new List<AfterUpdate>());
-            bdActions.put(sObjectName, new List<BeforeDelete>());
-            adActions.put(sObjectName, new List<AfterDelete>());
-            audActions.put(sObjectName, new List<AfterUndelete>());
-        }
+    public interface Actioner{}
 
-        if(!actions.containsKey(sObjectName)) return;
-
-        for(String actionName : actions.get(sObjectName)){
-
-            Object action = Type.forName(actionName.trim()).newInstance();
-
-            if(action instanceof BeforeInsert)
-                biActions.get(sObjectName).add((BeforeInsert)action);
-
-            if(action instanceof AfterInsert)
-                aiActions.get(sObjectName).add((AfterInsert)action);
-            
-            if(action instanceof BeforeUpdate)
-                buActions.get(sObjectName).add((BeforeUpdate)action);
-
-            if(action instanceof AfterUpdate)
-                auActions.get(sObjectName).add((AfterUpdate)action);
-            
-            if(action instanceof BeforeDelete)
-                bdActions.get(sObjectName).add((BeforeDelete)action);
-            
-            if(action instanceof AfterDelete)
-                adActions.get(sObjectName).add((AfterDelete)action);
-            
-            if(action instanceof AfterUndelete)
-                audActions.get(sObjectName).add((AfterUndelete)action);
-        }
-
-        actions.remove(sObjectName);
-
+    public interface Skipable{
+        String customPermission();
+    }
+    public interface BeforeInsert extends Actioner{
+        boolean inScopeBeforeInsert(SObject newRecord);
+        void processBeforeInsert(SObject[] scope);
+    }
+    public interface AfterInsert extends Actioner{
+        boolean inScopeAfterInsert(SObject newRecord);
+        void processAfterInsert(SObject[] scope);
+    }
+    public interface BeforeUpdate extends Actioner{
+        boolean inScopeBeforeUpdate(SObject newRecord);
+        void processBeforeUpdate(SObject[] scope);
+    }
+    public interface AfterUpdate extends Actioner{
+        boolean inScopeAfterUpdate(SObject newRecord);
+        void processAfterUpdate(SObject[] scope);
+    }
+    public interface BeforeDelete extends Actioner{
+        boolean inScopeBeforeDelete(SObject oldRecord);
+        void processBeforeDelete(SObject[] scope);
+    }
+    public interface AfterDelete extends Actioner{
+        boolean inScopeAfterDelete(SObject oldRecord);
+        void processAfterDelete(SObject[] scope);
+    }
+    public interface AfterUndelete extends Actioner{
+        boolean inScopeAfterUndelete(SObject newRecord);
+        void processAfterUndelete(SObject[] scope);
     }
 
+    public Tiger(String[] actionerClasses){
 
-    public void handle(){
+        for(String actionerClass : actionerClasses){
 
-        initCurrentSObjectTriggerActions();
+            Actioner actioner = (Actioner)Type.forName(actionerClass).newInstance();
 
-        detailizeScopeFromDb();
+            addActioner(actioner);
+        }
+    }
+
+    public Tiger(Actioner[] actioners){
+
+        for(Actioner actioner : actioners){
+            
+            addActioner(actioner);
+        }
+    }
+
+    public Tiger(String[] actionerClasses, String context){
+
+        this(actionerClasses);
+
+        this.context = context;        
+    }
+
+    public Tiger(Actioner[] actioners, String context){
+
+        this(actioners);
+
+        this.context = context;
+    }
+
+    private void addActioner(Actioner actioner){
         
-        String sObjectName = getSObjectName();
+        if(actioner instanceof BeforeInsert)
+            actionersBi.add((BeforeInsert)actioner);
 
-        if(trigger.isbefore){
+        if(actioner instanceof AfterInsert)
+            actionersAi.add((AfterInsert)actioner);
+        
+        if(actioner instanceof BeforeUpdate)
+            actionersBu.add((BeforeUpdate)actioner);
+
+        if(actioner instanceof AfterUpdate)
+            actionersAu.add((AfterUpdate)actioner);
+        
+        if(actioner instanceof BeforeDelete)
+            actionersBd.add((BeforeDelete)actioner);
+        
+        if(actioner instanceof AfterDelete)
+            actionersAd.add((AfterDelete)actioner);
+        
+        if(actioner instanceof AfterUndelete)
+            actionersAud.add((AfterUndelete)actioner);
+    }
+
+    public Tiger turnOffSkipTiger(){
+
+        this.allowSkipTiger = false;
+
+        return this;
+    }
+
+    public void fire(){
+
+        if(this.allowSkipTiger && hasSkipTigerCustomPermission()) return;
+
+        if(trigger.isBefore){
+            
             if(trigger.isInsert){
-                for(BeforeInsert action : biActions.get(sObjectName)){
-                    handle(action);
-                }
+
+                executeBeforeInsert();
             }
             else if(trigger.isUpdate){
-                for(BeforeUpdate action : buActions.get(sObjectName)){                    
-                    handle(action);
-                }
+
+                executeBeforeUpdate();
             }
             else if(trigger.isDelete){
-                for(BeforeDelete action : bdActions.get(sObjectName)){
-                   handle(action);
-                }
+
+                executeBeforeDelete();
             }
         }
         else{
             if(trigger.isInsert){
-                for(AfterInsert action : aiActions.get(sObjectName)){
-                    handle(action);
-                }
+                
+                executeAfterInsert();
             }
             else if(trigger.isUpdate){
-                for(AfterUpdate action : auActions.get(sObjectName)){
-                    handle(action);
-                }
+                
+                executeAfterUpdate();
             }
             else if(trigger.isDelete){
-                for(AfterDelete action : adActions.get(sObjectName)){
-                    handle(action);
-                }
+                
+                executeAfterDelete();
             }
             else if(trigger.isUndelete){
-                for(AfterUndelete action : audActions.get(sObjectName)){
-                    handle(action);
-                }
+
+                executeAfterUndelete();
             }
         }
     }
 
-    private static void handle(BeforeInsert biAction){
+    private void executeBeforeInsert(){
         
-        SObject[] recordsInScope = new SObject[]{};
+        System.debug('Executing before insert trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunBi)){
+
+            for(BeforeInsert actioner : actionersBi){
+                
+                if(isReExecutable(actioner)){
+
+                    execute(actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun(contextsAlreadyRunBi);
+
+            for(BeforeInsert actioner : actionersBi){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
+        
+    }
+    
+    private void executeBeforeUpdate(){
+
+        System.debug('Executing before update trigger for ' + getSObjectName());
+
+        if(alreadyRun(contextsAlreadyRunBu)){
+
+            for(BeforeUpdate actioner : actionersBu){
+                
+                if(isReExecutable(actioner)){
+
+                    execute(actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun(contextsAlreadyRunBu);
+
+            for(BeforeUpdate actioner : actionersBu){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
+    }
+
+    private void executeBeforeDelete(){
+
+        System.debug('Executing before delete trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunBd)){
+
+            for(BeforeDelete actioner : actionersBd){
+                
+                if(isReExecutable(actioner)){
+
+                    execute(actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun(contextsAlreadyRunBd);
+
+            for(BeforeDelete actioner : actionersBd){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
+    }
+    
+    private void executeAfterInsert(){
+
+        System.debug('Executing after insert trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunAi)){
+
+            for(AfterInsert actioner : actionersAi){
+                
+                if(isReExecutable(actioner)){
+
+                    execute(actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun(contextsAlreadyRunAi);
+
+            for(AfterInsert actioner : actionersAi){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
+    }
+    
+    private void executeAfterUpdate(){
+
+        System.debug('Executing after update trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunAu)){
+
+            for(AfterUpdate actioner : actionersAu){
+                
+                if(isReExecutable(actioner)){
+
+                    execute(actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun(contextsAlreadyRunAu);
+
+            for(AfterUpdate actioner : actionersAu){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
+    }
+    
+    private void executeAfterDelete(){
+
+        System.debug('Executing after delete trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunAd)){
+
+            for(AfterDelete actioner : actionersAd){
+                
+                if(isReExecutable(actioner)){
+
+                    execute(actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun(contextsAlreadyRunAd);
+
+            for(AfterDelete actioner : actionersAd){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
+    }
+
+    private void executeAfterUndelete(){
+
+        System.debug('Executing after undelete trigger for ' + getSObjectName());
+        
+        if(alreadyRun(contextsAlreadyRunAud)){
+
+            for(AfterUndelete actioner : actionersAud){
+                
+                if(isReExecutable(actioner)){
+
+                    execute(actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun(contextsAlreadyRunAud);
+
+            for(AfterUndelete actioner : actionersAud){
+                
+                if(!skipActioner(actioner))
+                    execute(actioner);
+            }
+        }
+    }
+
+    private void execute(BeforeInsert actioner){
+        
+        SObject[] scope = new SObject[]{};
         
         for(SObject record : trigger.new){
             
-            if(biAction.isInScopeBi(record))
-                recordsInScope.add(record);
+            if(actioner.inScopeBeforeInsert(record))
+                scope.add(record);
         }
 
-        if(!recordsInScope.isEmpty())
-            biAction.handleBi(recordsInScope);
+        if(!scope.isEmpty())
+            actioner.processBeforeInsert(scope);
     }
 
-    private static void handle(AfterInsert aiAction){
+    private void execute(AfterInsert actioner){
         
-        SObject[] recordsInScope = new SObject[]{};
-        
-        for(SObject record : trigger.new){
-            
-            if(aiAction.isInScopeAi(record))
-                recordsInScope.add(record);
-        }
-
-        if(!recordsInScope.isEmpty())
-            aiAction.handleAi(recordsInScope);
-    }
-
-    private static void handle(BeforeUpdate buAction){
-
-        SObject[] recordsInScope = new SObject[]{};
+        SObject[] scope = new SObject[]{};
         
         for(SObject record : trigger.new){
             
-            if(buAction.isInScopeBu(record))
-                recordsInScope.add(record);
+            if(actioner.inScopeAfterInsert(record))
+                scope.add(record);
         }
 
-        if(!recordsInScope.isEmpty())
-            buAction.handleBu(recordsInScope);
+        if(!scope.isEmpty())
+            actioner.processAfterInsert(scope);
     }
 
-    private static void handle(AfterUpdate auAction){
+    private void execute(BeforeUpdate actioner){
 
-        SObject[] recordsInScope = new SObject[]{};
+        SObject[] scope = new SObject[]{};
         
         for(SObject record : trigger.new){
             
-            if(auAction.isInScopeAu(record))
-                recordsInScope.add(record);
+            if(actioner.inScopeBeforeUpdate(record))
+                scope.add(record);
         }
 
-        if(!recordsInScope.isEmpty())
-            auAction.handleAu(recordsInScope);
+        if(!scope.isEmpty())
+            actioner.processBeforeUpdate(scope);
     }
 
-    private static void handle(BeforeDelete bdAction){
+    private void execute(AfterUpdate actioner){
 
-        SObject[] recordsInScope = new SObject[]{};
+        SObject[] scope = new SObject[]{};
         
         for(SObject record : trigger.new){
             
-            if(bdAction.isInScopeBd(record))
-                recordsInScope.add(record);
+            if(actioner.inScopeAfterUpdate(record))
+                scope.add(record);
         }
 
-        if(!recordsInScope.isEmpty())
-            bdAction.handleBd(recordsInScope);
+        if(!scope.isEmpty())
+            actioner.processAfterUpdate(scope);
     }
 
-    private static void handle(AfterDelete adAction){
+    private void execute(BeforeDelete actioner){
 
-        SObject[] recordsInScope = new SObject[]{};
+        SObject[] scope = new SObject[]{};
         
         for(SObject record : trigger.old){
             
-            if(adAction.isInScopeAd(record))
-                recordsInScope.add(record);
+            if(actioner.inScopeBeforeDelete(record))
+                scope.add(record);
         }
 
-        if(!recordsInScope.isEmpty())
-            adAction.handleAd(recordsInScope);
+        if(!scope.isEmpty())
+            actioner.processBeforeDelete(scope);
     }
 
-    private static void handle(AfterUndelete audAction){
+    private void execute(AfterDelete actioner){
 
-        SObject[] recordsInScope = new SObject[]{};
+        SObject[] scope = new SObject[]{};
+        
+        for(SObject record : trigger.old){
+            
+            if(actioner.inScopeAfterDelete(record))
+                scope.add(record);
+        }
+
+        if(!scope.isEmpty())
+            actioner.processAfterDelete(scope);
+    }
+
+    private void execute(AfterUndelete actioner){
+
+        SObject[] scope = new SObject[]{};
         
         for(SObject record : trigger.new){
             
-            if(audAction.isInScopeAud(record))
-                recordsInScope.add(record);
+            if(actioner.inScopeAfterUndelete(record))
+                scope.add(record);
         }
 
-        if(!recordsInScope.isEmpty())
-            audAction.handleAud(recordsInScope);
+        if(!scope.isEmpty())
+            actioner.processAfterUndelete(scope);
     }
 
-    public Integer getTriggerLevel(){
+    private Boolean isReExecutable(Actioner actioner){
 
-        return sObjectTriggerCounterMap.get(getSObjectName());
+        return (actioner instanceof Recursive) && !skipActioner(actioner);
     }
 
-    private static void addTriggerCount(){
+    private Boolean alreadyRun(Map<String, Set<String>> contextAlreadyRun){
 
         String sObjectName = getSObjectName();
 
-        if(!sObjectTriggerCounterMap.containsKey(sObjectName)){
+        if(!contextAlreadyRun.containsKey(sObjectName)){
 
-            sObjectTriggerCounterMap.put(sObjectName, 1);
+            return false;
+        }
+        else{
 
-            return;
+            return contextAlreadyRun.get(sObjectName).contains(context);
+        }
+    }
+
+    private void markAlreadyRun(Map<String, Set<String>> contextAlreadyRun){
+
+        String sObjectName = getSObjectName();
+
+        if(!contextAlreadyRun.containsKey(sObjectName)){
+
+            contextAlreadyRun.put(sObjectName, new Set<String>());
         }
 
-        sObjectTriggerCounterMap.put(sObjectName, sObjectTriggerCounterMap.get(sObjectName) + 1);
+        contextAlreadyRun.get(sObjectName).add(context);
     }
+
+    private Boolean hasSkipTigerCustomPermission(){
+
+        String customPermissionBase = 'SKIP_TIGER_' + getSObjectName();
+
+        String customPermissionToSkip = context == null ? customPermissionBase : customPermissionBase + '_' + context;
+
+        return FeatureManagement.checkPermission(customPermissionToSkip);
+    }
+
+    private Boolean skipActioner(Actioner actioner){
+
+        if(actioner instanceof Skipable){
+
+            Skipable skipable = (Skipable)actioner;
+
+            return FeatureManagement.checkPermission(skipable.customPermission());
+        }
+
+        return false;
+    }
+
 
     private static String getSObjectName(){
 
@@ -342,73 +524,4 @@ public virtual class Tiger {
 
         return recordsInTrigger.getSObjectType().getDescribe().getName();
     }
-
-    /**
-    * Flyweight: only load the uncached records within the scope of trigger
-    */
-    public SObject[] detailizeScopeFromDb(){
-        
-        List<SObject> scope = trigger.old == null ? trigger.new : trigger.old;
-
-        Set<Id> uncachedIds = getUncachedIds(scope);
-
-        if(!uncachedIds.isEmpty()){
-
-            SObject[] uncachedDetails = detailize(uncachedIds);
-
-            if(uncachedDetails != null)
-                cache.putAll(uncachedDetails);
-        }
-            
-        SObject[] ret = new SObject[]{};
-
-        for(SObject record : scope){
-
-            SObject cachedRecord = cache.get(record.Id);
-
-            if(cachedRecord != null)
-                ret.add(cachedRecord);
-            else
-                ret.add(record);
-        }
-
-        return ret;
-    }
-
-    private static Set<Id> getUncachedIds(List<SObject> scope){
-
-        Set<Id> ret = new Set<Id>();
-
-        for(SObject record : scope){
-
-            if(!cache.containsKey(record.Id))
-                ret.add(record.Id);
-        }
-        
-        return ret;
-    }
-
-    
-    /**
-    * It is meant to perform a single query to get all the relevant information including parent's fields and the related lists against the trigger.new
-    *, so that multiple queries can be avoided and cached records can be shared across the transaction ever since; 
-    *
-    * This method should only be overridden once by the root trigger handler of a speicific object;
-    * By default, it is getting the records from trigger.old without additional query 
-    * The override is needed when the trigger context need more information from DB to drive the logic.
-    * 
-    * Example: [SELECT Account.Name, Account.Website, FirstName, LastName, (SELECT CaseNumber FROM Cases) FROM Contact where Id in: ids]
-    * Note: while using the chid relational SOQL query as the above, if there are a mass number of children (e.g. 1000 on average) for each record, 
-    *       the child relational SOQL query should be alternated with more efficient approaches such as Aggregate SOQL.
-    */
-    protected virtual SObject[] detailize(Set<Id> ids){
-
-        return trigger.old;
-    }
-
-    public static SObject getDbRecord(Id id){
-
-        return cache.get(id);
-    }
-    
 }
