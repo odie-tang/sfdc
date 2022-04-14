@@ -1,8 +1,8 @@
 /**
  * Blog: https://odietang.blogspot.com/2020/08/introduction-to-tiger.html
+ * Source Code: https://github.com/odie-tang/sfdc/blob/develop/base/force-app/main/default/classes/Tiger.cls
  * 
- * Copyright (c), odie.tang (guihuatang@hotmail.com)
- * All rights reserved.
+ * Copyright (c), odie.tang
  *
  * Redistribution and use in source and package forms, with or without modification,
  *   are permitted provided that the following conditions are met:
@@ -30,21 +30,21 @@ public virtual class Tiger {
     private String context;
     private Boolean allowSkipTiger = true;
     
-    private static Map<String, Set<String>> contextsAlreadyRunBi  = new Map<String, Set<String>>();
-    private static Map<String, Set<String>> contextsAlreadyRunAi  = new Map<String, Set<String>>();
-    private static Map<String, Set<String>> contextsAlreadyRunBu  = new Map<String, Set<String>>();
-    private static Map<String, Set<String>> contextsAlreadyRunAu  = new Map<String, Set<String>>();
-    private static Map<String, Set<String>> contextsAlreadyRunBd  = new Map<String, Set<String>>();
-    private static Map<String, Set<String>> contextsAlreadyRunAd  = new Map<String, Set<String>>();
-    private static Map<String, Set<String>> contextsAlreadyRunAud = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunBeforeInsert  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAfterInsert  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunBeforeUpdate  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAfterUpdate  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunBeforeDelete  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAfterDelete  = new Map<String, Set<String>>();
+    private static Map<String, Set<String>> contextsAlreadyRunAfterUndelete = new Map<String, Set<String>>();
     
-    private List<BeforeInsert> actionersBi = new List<BeforeInsert>();
-    private List<AfterInsert> actionersAi = new List<AfterInsert>();
-    private List<BeforeUpdate> actionersBu = new List<BeforeUpdate>();
-    private List<AfterUpdate> actionersAu = new List<AfterUpdate>();
-    private List<BeforeDelete> actionersBd = new List<BeforeDelete>();
-    private List<AfterDelete> actionersAd = new List<AfterDelete>();
-    private List<AfterUndelete> actionersAud = new List<AfterUndelete>();
+    private List<BeforeInsert> actionersBeforeInsert = new List<BeforeInsert>();
+    private List<AfterInsert> actionersAfterInsert = new List<AfterInsert>();
+    private List<BeforeUpdate> actionersBeforeUpdate = new List<BeforeUpdate>();
+    private List<AfterUpdate> actionersAfterUpdate = new List<AfterUpdate>();
+    private List<BeforeDelete> actionersBeforeDelete = new List<BeforeDelete>();
+    private List<AfterDelete> actionersAfterDelete = new List<AfterDelete>();
+    private List<AfterUndelete> actionersAfterUndelete = new List<AfterUndelete>();
 
     public interface Recursive{}
 
@@ -116,26 +116,40 @@ public virtual class Tiger {
 
     private void addActioner(Actioner actioner){
         
-        if(actioner instanceof BeforeInsert)
-            actionersBi.add((BeforeInsert)actioner);
+        if(actioner instanceof BeforeInsert){
 
-        if(actioner instanceof AfterInsert)
-            actionersAi.add((AfterInsert)actioner);
-        
-        if(actioner instanceof BeforeUpdate)
-            actionersBu.add((BeforeUpdate)actioner);
+            actionersBeforeInsert.add((BeforeInsert)actioner);
+        }
 
-        if(actioner instanceof AfterUpdate)
-            actionersAu.add((AfterUpdate)actioner);
+        if(actioner instanceof AfterInsert){
+
+            actionersAfterInsert.add((AfterInsert)actioner);
+        }
         
-        if(actioner instanceof BeforeDelete)
-            actionersBd.add((BeforeDelete)actioner);
+        if(actioner instanceof BeforeUpdate){
+
+            actionersBeforeUpdate.add((BeforeUpdate)actioner);
+        }
+
+        if(actioner instanceof AfterUpdate){
+
+            actionersAfterUpdate.add((AfterUpdate)actioner);
+        }
         
-        if(actioner instanceof AfterDelete)
-            actionersAd.add((AfterDelete)actioner);
+        if(actioner instanceof BeforeDelete){
+
+            actionersBeforeDelete.add((BeforeDelete)actioner);
+        }
         
-        if(actioner instanceof AfterUndelete)
-            actionersAud.add((AfterUndelete)actioner);
+        if(actioner instanceof AfterDelete){
+
+            actionersAfterDelete.add((AfterDelete)actioner);
+        }
+        
+        if(actioner instanceof AfterUndelete){
+
+            actionersAfterUndelete.add((AfterUndelete)actioner);
+        }
     }
 
     public Tiger turnOffSkipTiger(){
@@ -188,9 +202,9 @@ public virtual class Tiger {
         
         System.debug('Executing before insert trigger for ' + getSObjectName());
         
-        if(alreadyRun(contextsAlreadyRunBi)){
+        if(alreadyRun(contextsAlreadyRunBeforeInsert)){
 
-            for(BeforeInsert actioner : actionersBi){
+            for(BeforeInsert actioner : actionersBeforeInsert){
                 
                 if(isReExecutable(actioner)){
 
@@ -200,12 +214,14 @@ public virtual class Tiger {
         }
         else{
 
-            markAlreadyRun(contextsAlreadyRunBi);
+            markAlreadyRun(contextsAlreadyRunBeforeInsert);
 
-            for(BeforeInsert actioner : actionersBi){
+            for(BeforeInsert actioner : actionersBeforeInsert){
                 
-                if(!skipActioner(actioner))
+                if(!skipActioner(actioner)){
+
                     execute(actioner);
+                }
             }
         }
         
@@ -215,9 +231,9 @@ public virtual class Tiger {
 
         System.debug('Executing before update trigger for ' + getSObjectName());
 
-        if(alreadyRun(contextsAlreadyRunBu)){
+        if(alreadyRun(contextsAlreadyRunBeforeUpdate)){
 
-            for(BeforeUpdate actioner : actionersBu){
+            for(BeforeUpdate actioner : actionersBeforeUpdate){
                 
                 if(isReExecutable(actioner)){
 
@@ -227,12 +243,14 @@ public virtual class Tiger {
         }
         else{
 
-            markAlreadyRun(contextsAlreadyRunBu);
+            markAlreadyRun(contextsAlreadyRunBeforeUpdate);
 
-            for(BeforeUpdate actioner : actionersBu){
+            for(BeforeUpdate actioner : actionersBeforeUpdate){
                 
-                if(!skipActioner(actioner))
+                if(!skipActioner(actioner)){
+
                     execute(actioner);
+                }
             }
         }
     }
@@ -241,9 +259,9 @@ public virtual class Tiger {
 
         System.debug('Executing before delete trigger for ' + getSObjectName());
         
-        if(alreadyRun(contextsAlreadyRunBd)){
+        if(alreadyRun(contextsAlreadyRunBeforeDelete)){
 
-            for(BeforeDelete actioner : actionersBd){
+            for(BeforeDelete actioner : actionersBeforeDelete){
                 
                 if(isReExecutable(actioner)){
 
@@ -253,12 +271,14 @@ public virtual class Tiger {
         }
         else{
 
-            markAlreadyRun(contextsAlreadyRunBd);
+            markAlreadyRun(contextsAlreadyRunBeforeDelete);
 
-            for(BeforeDelete actioner : actionersBd){
+            for(BeforeDelete actioner : actionersBeforeDelete){
                 
-                if(!skipActioner(actioner))
+                if(!skipActioner(actioner)){
+
                     execute(actioner);
+                }
             }
         }
     }
@@ -267,9 +287,9 @@ public virtual class Tiger {
 
         System.debug('Executing after insert trigger for ' + getSObjectName());
         
-        if(alreadyRun(contextsAlreadyRunAi)){
+        if(alreadyRun(contextsAlreadyRunAfterInsert)){
 
-            for(AfterInsert actioner : actionersAi){
+            for(AfterInsert actioner : actionersAfterInsert){
                 
                 if(isReExecutable(actioner)){
 
@@ -279,12 +299,14 @@ public virtual class Tiger {
         }
         else{
 
-            markAlreadyRun(contextsAlreadyRunAi);
+            markAlreadyRun(contextsAlreadyRunAfterInsert);
 
-            for(AfterInsert actioner : actionersAi){
+            for(AfterInsert actioner : actionersAfterInsert){
                 
-                if(!skipActioner(actioner))
+                if(!skipActioner(actioner)){
+
                     execute(actioner);
+                }
             }
         }
     }
@@ -293,9 +315,9 @@ public virtual class Tiger {
 
         System.debug('Executing after update trigger for ' + getSObjectName());
         
-        if(alreadyRun(contextsAlreadyRunAu)){
+        if(alreadyRun(contextsAlreadyRunAfterUpdate)){
 
-            for(AfterUpdate actioner : actionersAu){
+            for(AfterUpdate actioner : actionersAfterUpdate){
                 
                 if(isReExecutable(actioner)){
 
@@ -305,12 +327,14 @@ public virtual class Tiger {
         }
         else{
 
-            markAlreadyRun(contextsAlreadyRunAu);
+            markAlreadyRun(contextsAlreadyRunAfterUpdate);
 
-            for(AfterUpdate actioner : actionersAu){
+            for(AfterUpdate actioner : actionersAfterUpdate){
                 
-                if(!skipActioner(actioner))
+                if(!skipActioner(actioner)){
+
                     execute(actioner);
+                }
             }
         }
     }
@@ -319,9 +343,9 @@ public virtual class Tiger {
 
         System.debug('Executing after delete trigger for ' + getSObjectName());
         
-        if(alreadyRun(contextsAlreadyRunAd)){
+        if(alreadyRun(contextsAlreadyRunAfterDelete)){
 
-            for(AfterDelete actioner : actionersAd){
+            for(AfterDelete actioner : actionersAfterDelete){
                 
                 if(isReExecutable(actioner)){
 
@@ -331,12 +355,14 @@ public virtual class Tiger {
         }
         else{
 
-            markAlreadyRun(contextsAlreadyRunAd);
+            markAlreadyRun(contextsAlreadyRunAfterDelete);
 
-            for(AfterDelete actioner : actionersAd){
+            for(AfterDelete actioner : actionersAfterDelete){
                 
-                if(!skipActioner(actioner))
+                if(!skipActioner(actioner)){
+
                     execute(actioner);
+                }
             }
         }
     }
@@ -345,9 +371,9 @@ public virtual class Tiger {
 
         System.debug('Executing after undelete trigger for ' + getSObjectName());
         
-        if(alreadyRun(contextsAlreadyRunAud)){
+        if(alreadyRun(contextsAlreadyRunAfterUndelete)){
 
-            for(AfterUndelete actioner : actionersAud){
+            for(AfterUndelete actioner : actionersAfterUndelete){
                 
                 if(isReExecutable(actioner)){
 
@@ -357,12 +383,14 @@ public virtual class Tiger {
         }
         else{
 
-            markAlreadyRun(contextsAlreadyRunAud);
+            markAlreadyRun(contextsAlreadyRunAfterUndelete);
 
-            for(AfterUndelete actioner : actionersAud){
+            for(AfterUndelete actioner : actionersAfterUndelete){
                 
-                if(!skipActioner(actioner))
+                if(!skipActioner(actioner)){
+
                     execute(actioner);
+                }
             }
         }
     }
@@ -373,12 +401,16 @@ public virtual class Tiger {
         
         for(SObject record : trigger.new){
             
-            if(actioner.inScopeBeforeInsert(record))
+            if(actioner.inScopeBeforeInsert(record)){
+
                 scope.add(record);
+            }
         }
 
-        if(!scope.isEmpty())
+        if(!scope.isEmpty()){
+
             actioner.processBeforeInsert(scope);
+        }
     }
 
     private void execute(AfterInsert actioner){
@@ -387,12 +419,16 @@ public virtual class Tiger {
         
         for(SObject record : trigger.new){
             
-            if(actioner.inScopeAfterInsert(record))
+            if(actioner.inScopeAfterInsert(record)){
+
                 scope.add(record);
+            }
         }
 
-        if(!scope.isEmpty())
+        if(!scope.isEmpty()){
+
             actioner.processAfterInsert(scope);
+        }
     }
 
     private void execute(BeforeUpdate actioner){
@@ -401,12 +437,16 @@ public virtual class Tiger {
         
         for(SObject record : trigger.new){
             
-            if(actioner.inScopeBeforeUpdate(record))
+            if(actioner.inScopeBeforeUpdate(record)){
+
                 scope.add(record);
+            }
         }
 
-        if(!scope.isEmpty())
+        if(!scope.isEmpty()){
+
             actioner.processBeforeUpdate(scope);
+        }
     }
 
     private void execute(AfterUpdate actioner){
@@ -415,12 +455,16 @@ public virtual class Tiger {
         
         for(SObject record : trigger.new){
             
-            if(actioner.inScopeAfterUpdate(record))
+            if(actioner.inScopeAfterUpdate(record)){
+
                 scope.add(record);
+            }
         }
 
-        if(!scope.isEmpty())
+        if(!scope.isEmpty()){
+
             actioner.processAfterUpdate(scope);
+        }
     }
 
     private void execute(BeforeDelete actioner){
@@ -429,12 +473,16 @@ public virtual class Tiger {
         
         for(SObject record : trigger.old){
             
-            if(actioner.inScopeBeforeDelete(record))
+            if(actioner.inScopeBeforeDelete(record)){
+
                 scope.add(record);
+            }
         }
 
-        if(!scope.isEmpty())
+        if(!scope.isEmpty()){
+
             actioner.processBeforeDelete(scope);
+        }
     }
 
     private void execute(AfterDelete actioner){
@@ -443,12 +491,16 @@ public virtual class Tiger {
         
         for(SObject record : trigger.old){
             
-            if(actioner.inScopeAfterDelete(record))
+            if(actioner.inScopeAfterDelete(record)){
+
                 scope.add(record);
+            }
         }
 
-        if(!scope.isEmpty())
+        if(!scope.isEmpty()){
+
             actioner.processAfterDelete(scope);
+        }
     }
 
     private void execute(AfterUndelete actioner){
@@ -457,12 +509,16 @@ public virtual class Tiger {
         
         for(SObject record : trigger.new){
             
-            if(actioner.inScopeAfterUndelete(record))
+            if(actioner.inScopeAfterUndelete(record)){
+
                 scope.add(record);
+            }
         }
 
-        if(!scope.isEmpty())
+        if(!scope.isEmpty()){
+
             actioner.processAfterUndelete(scope);
+        }
     }
 
     private Boolean isReExecutable(Actioner actioner){
