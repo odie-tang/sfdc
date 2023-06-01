@@ -40,9 +40,9 @@
  *      b) Define what is the "inScope" criteria and "process" logic for each Tiger.Actioner interface
  *      c) Add the class to the Apex Trigger for executing(e.g. Account.trigger), in the right sequential order along with others. 
  * 6. Benefits:
- *      a) The logics for each different trigger event is bounded to interfaces, developer no longer need to check the events using if...else... and pass parameters mannually
+ *      a) The logics for each different trigger event is bounded to interfaces, developers no longer need to check the events using if...else... and pass parameters mannually
  *      b) A single apex class can implement multiple trigger events, allowing related work to be cohesively grouped in a single place
- *      c) Each individual Apex class implementing Tiger.Actioner is pretty much standalone with their own "inScope" definition, having minimum impact to the others, which solves the main common problem of writting Apex triggers.
+ *      c) Each individual Apex class implementing Tiger.Actioner is standalone with their own "inScope" definition, having minimum impact to the others, which solves the main common problem of writting Apex triggers.
  *      d) Controll the sequence of execution while adding the class instance to the Apex Trigger easily
  *      e) By default, recursion is avoided for update triggers, less worry to getting into recursion issues
  *      f) Dynamically hooked up with Custom Permissions, allowing to controll Skipability using standard Permission Sets/Permission Set Groups in a more flexible way, without introducing extra mechnism like the Custom Metadata or Custom Settings.
