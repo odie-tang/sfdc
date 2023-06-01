@@ -1,4 +1,3 @@
-
 /*
 *
 * Add this test class, the implementation of Tiger Actioners to the Account trigger.
