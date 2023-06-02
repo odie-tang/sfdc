@@ -204,7 +204,7 @@ public virtual class Tiger {
 
         for(Actioner actioner : this.actioners){
             
-            if(!skipActioner(actioner)){
+            if((actioner instanceof BeforeInsert) && !skipActioner(actioner)){
 
                 execute((BeforeInsert)actioner);
             }
@@ -220,7 +220,7 @@ public virtual class Tiger {
 
             for(Actioner actioner : this.actioners){
                 
-                if(isReExecutable(actioner)){
+                if((actioner instanceof BeforeUpdate) && isReExecutable(actioner)){
 
                     execute((BeforeUpdate)actioner);
                 }
@@ -232,7 +232,7 @@ public virtual class Tiger {
 
             for(Actioner actioner : this.actioners){
                 
-                if(!skipActioner(actioner)){
+                if((actioner instanceof BeforeUpdate) && !skipActioner(actioner)){
 
                     execute((BeforeUpdate)actioner);
                 }
@@ -244,7 +244,7 @@ public virtual class Tiger {
 
         for(Actioner actioner : this.actioners){
             
-            if(!skipActioner(actioner)){
+            if((actioner instanceof BeforeDelete) && !skipActioner(actioner)){
 
                 execute((BeforeDelete)actioner);
             }
@@ -255,7 +255,7 @@ public virtual class Tiger {
 
         for(Actioner actioner : this.actioners){
             
-            if(!skipActioner(actioner)){
+            if((actioner instanceof AfterInsert) && !skipActioner(actioner)){
 
                 execute((AfterInsert)actioner);
             }
@@ -271,7 +271,7 @@ public virtual class Tiger {
 
             for(Actioner actioner : this.actioners){
                 
-                if(isReExecutable(actioner)){
+                if((actioner instanceof AfterUpdate) && isReExecutable(actioner)){
 
                     execute((AfterUpdate)actioner);
                 }
@@ -283,7 +283,7 @@ public virtual class Tiger {
 
             for(Actioner actioner : this.actioners){
                 
-                if(!skipActioner(actioner)){
+                if((actioner instanceof AfterUpdate) && !skipActioner(actioner)){
 
                     execute((AfterUpdate)actioner);
                 }
@@ -295,7 +295,7 @@ public virtual class Tiger {
         
         for(Actioner actioner : this.actioners){
                 
-            if(!skipActioner(actioner)){
+            if((actioner instanceof AfterDelete) && !skipActioner(actioner)){
 
                 execute((AfterDelete)actioner);
             }
@@ -306,9 +306,9 @@ public virtual class Tiger {
         
         for(Actioner actioner : this.actioners){
                 
-            if(!skipActioner(actioner)){
+            if((actioner instanceof AfterUndelete) && !skipActioner(actioner)){
 
-                execute((AfterUpdate)actioner);
+                execute((AfterUndelete)actioner);
             }
         }
     }
