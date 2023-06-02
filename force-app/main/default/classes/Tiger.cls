@@ -88,31 +88,31 @@ public virtual class Tiger {
      * 
      */
     public interface BeforeInsert extends Actioner{
-        boolean inScopeBeforeInsert(SObject newRecord);
+        Boolean inScopeBeforeInsert(SObject newRecord);
         void processBeforeInsert(SObject[] scope);
     }
     public interface AfterInsert extends Actioner{
-        boolean inScopeAfterInsert(SObject newRecord);
+        Boolean inScopeAfterInsert(SObject newRecord);
         void processAfterInsert(SObject[] scope);
     }
     public interface BeforeUpdate extends Actioner{
-        boolean inScopeBeforeUpdate(SObject newRecord);
+        Boolean inScopeBeforeUpdate(SObject newRecord);
         void processBeforeUpdate(SObject[] scope);
     }
     public interface AfterUpdate extends Actioner{
-        boolean inScopeAfterUpdate(SObject newRecord);
+        Boolean inScopeAfterUpdate(SObject newRecord);
         void processAfterUpdate(SObject[] scope);
     }
     public interface BeforeDelete extends Actioner{
-        boolean inScopeBeforeDelete(SObject oldRecord);
+        Boolean inScopeBeforeDelete(SObject oldRecord);
         void processBeforeDelete(SObject[] scope);
     }
     public interface AfterDelete extends Actioner{
-        boolean inScopeAfterDelete(SObject oldRecord);
+        Boolean inScopeAfterDelete(SObject oldRecord);
         void processAfterDelete(SObject[] scope);
     }
     public interface AfterUndelete extends Actioner{
-        boolean inScopeAfterUndelete(SObject newRecord);
+        Boolean inScopeAfterUndelete(SObject newRecord);
         void processAfterUndelete(SObject[] scope);
     }
 

@@ -35,7 +35,7 @@ public with sharing class AccountTgIndustryGovernmentManager implements
      * 
      * In this example, when an Account is created and its Industry equals to "Government", it is in the scope.
      */
-    public boolean inScopeBeforeInsert(SObject newRecord){
+    public Boolean inScopeBeforeInsert(SObject newRecord){
 
         Account account = (Account)newRecord;
 
@@ -61,7 +61,7 @@ public with sharing class AccountTgIndustryGovernmentManager implements
      * In this example, it uses the same logic as in the "inScopeBeforeInsert" to check the scope of a record.
      * 
      */
-    public boolean inScopeAfterInsert(SObject newRecord){
+    public Boolean inScopeAfterInsert(SObject newRecord){
 
         return inScopeBeforeInsert(newRecord);
     }
@@ -83,7 +83,7 @@ public with sharing class AccountTgIndustryGovernmentManager implements
      * In this example, it checks each record in the Trigger.new to see if the Industry field has been changed to "Government" from a different value.
      * 
      */
-    public boolean inScopeBeforeUpdate(SObject newRecord){
+    public Boolean inScopeBeforeUpdate(SObject newRecord){
 
         return UtilTrigger.fieldChangedTo(newRecord, 'Industry', 'Government');
     }
@@ -107,7 +107,7 @@ public with sharing class AccountTgIndustryGovernmentManager implements
      * In this example, it uses the same logic as in the "inScopeBeforeUpdate" to check the scope of a record.
      * 
      */
-    public boolean inScopeAfterUpdate(SObject newRecord){
+    public Boolean inScopeAfterUpdate(SObject newRecord){
 
         return inScopeBeforeUpdate(newRecord);
     }
