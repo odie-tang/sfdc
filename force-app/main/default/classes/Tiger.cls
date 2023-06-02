@@ -49,34 +49,43 @@ public virtual class Tiger {
     //Used to host the Actioners of the currently executing Trigger event.
     private List<Actioner> actioners = new List<Actioner>();
 
-    //BeforeUpdate and AfterUpdate are not recursive by default. To make certain Update Actioners running recursively, implmeent this interface.
+    //BeforeUpdate and AfterUpdate are not recursive by default. To make certain Update Actioners running recursively, implement this interface.
     public interface Recursive{}
 
-    //The generic abstracted interface for all Trigger Event based interfaces.
+    //The super interface for all Trigger Event based interfaces.
     public interface Actioner{}
 
     /**
-     * The interface indicating whether an Actioner is not skipable. This is typically used when a Data Migration or Integration user needs to skip most 
-     * of the actioners with some exceptions. Actioners implementing this interface will not be skipped during DML executions when the user has the skip Tiger permissions.
+     * If an Actioner class implements this interface, no users will be able skip the execution of the class even when they have the SKIP permissions. 
+     * 
+     * It is typically used when a Data Migration or Integration user needs to skip most of the actioners with some exceptions.
+     * 
      */
     public interface NonSkipable{}
 
-    //The interface controlling whether a particular actioner class is skipable or not, thourough the name defined in the method "customPermission()".
+    /**
+     * If an Actioner class implements this interface, users with the Custom Permission defined in the method "customPermission()"
+     * will be able to skip the execution of the class. Add the Custom Permission to Permission Sets or Permission Set Groups and assign 
+     * to dedicated users accordingly.
+     * 
+     * If both NonSkipable and Skipable are implemented at the same time(should avoid that), the Skipable will be ignored.
+     */
     public interface Skipable{
         String customPermission();
     }
     /**
-     * Trigger Event based interface extends the super interface "Actioner". There are two methods: 
+     * Trigger Event based interface extends the super interface "Actioner". There are two methods for each Event based interface: 
      * 1. The "inScope" method iterates over each record in the Trigger's context records, collect them if they are determined as "in scope".
      * 2. The process method takes all the records that are in scope passed the "inScope" check above, and handles the logic in bulk manner.
      * 
      * Tips:
-     * 1. There is no need to manually check Trigger's event in the code and pass Trigger variables, the interface itself will determine when the actioner will be executed.
+     * 1. No need to manually check Trigger's event in the code and pass Trigger variables, the framework will determine in which trigger event the actioner will be executed based on the interface.
      * 2. Focus on defining the logic to check the "scope" for each individual record, instead of iterating over the entire list of records.
      * 3. The parameter's name of the "inScope" method indicates whether the record is from the Trigger.new or Trigger.old, e.g. "newRecord" is from the Trigger.new.
      * 4. In the before insert/update/undelete actioners, field values can be assigned directly to the scoped records, the same as assigning values to Trigger.new records.
      * 5. Salesforce Trigger variables(like Trigger.new, Trigger.old, Trigger.newMap, Trigger.oldMap) can still be used in any Tiger actioners.
      * 6. Use the utility methods in the UtilTrigger for checking if a field or multiple fields have been changed.
+     * 
      */
     public interface BeforeInsert extends Actioner{
         boolean inScopeBeforeInsert(SObject newRecord);

@@ -6,7 +6,8 @@
  * 
  * 1. Setting Special_Handling__c should be taken care of in the before triggers - BeforeInsert & BeforeUpdate
  * 2. Creating Tasks should be processed in the after triggers - AfterInsert & AfterUpdate.
- * 3. The before trigger and after trigger share the same "inScope" check for a particular trigger event, e.g. inScopeBeforeInsert vs. inScopeAfterInsert.
+ * 3. The before trigger and after trigger share the same "inScope" check for a particular trigger event, 
+ *    e.g. inScopeBeforeInsert vs. inScopeAfterInsert.
  * 4. The insert trigger and update trigger share the same "process" methods as both of them need to do the same thing for the in-scope Accounts - "setSpecialHandling" & "createTasks".
  * 5. In general, all a developer needs to do using the Tiger framework:
  *      a) Find out which trigger events need to fire the logic, and implement the corresponding Tiger.Actioner interface
@@ -15,10 +16,12 @@
  * 6. Benefits:
  *      a) The logics for each different trigger event is bounded to interfaces, developers no longer need to check the events using if...else... and pass parameters mannually
  *      b) A single apex class can implement multiple trigger events, allowing related work to be cohesively grouped in a single place
- *      c) Each individual Apex class implementing Tiger.Actioner is standalone with their own "inScope" definition, having minimum impact to the others, which solves the main common problem of writting Apex triggers.
+ *      c) Each individual Apex class implementing Tiger.Actioner is standalone with their own "inScope" definition, having minimum impact to the others, 
+ *         which solves the main common problem of writting Apex triggers.
  *      d) Controll the sequence of execution while adding the class instance to the Apex Trigger easily
  *      e) By default, recursion is avoided for update triggers, less worry to getting into recursion issues
- *      f) Dynamically hooked up with Custom Permissions, allowing to controll Skipability using standard Permission Sets/Permission Set Groups in a more flexible way, without introducing extra mechnism like the Custom Metadata or Custom Settings.
+ *      f) Dynamically hooked up with Custom Permissions, allowing to controll Skipability using standard Permission Sets/Permission Set Groups in a more flexible way, 
+ *         without introducing extra mechnism like the Custom Metadata or Custom Settings.
  * 
  */
 public with sharing class AccountTgIndustryGovernmentManager implements 
