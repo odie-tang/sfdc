@@ -315,14 +315,14 @@ public virtual class Tiger {
 
     private void debugStartExecution(){
 
-        String objectContext = this.context == null ? this.sObjectName : this.sObjectName + ' in the context " ' + this.context + '"';
+        String objectContext = this.context == null ? this.sObjectName : this.sObjectName + ' in the context of " ' + this.context + '"';
 
         System.debug('Executing ' + Trigger.operationType + ' trigger for ' + objectContext);
     }
 
     private void debugCompleteExecution(){
 
-        String objectContext = this.context == null ? this.sObjectName : this.sObjectName + ' in the context " ' + this.context + '"';
+        String objectContext = this.context == null ? this.sObjectName : this.sObjectName + ' in the context of " ' + this.context + '"';
 
         System.debug('Completed ' + Trigger.operationType + ' trigger for ' + objectContext);
     }
