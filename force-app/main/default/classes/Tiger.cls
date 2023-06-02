@@ -161,7 +161,7 @@ public virtual class Tiger {
 
     public void fire(){
 
-        debugTrigger();
+        debugStartExecution();
 
         if(Trigger.isBefore){
                 
@@ -196,6 +196,8 @@ public virtual class Tiger {
                 executeAfterUndelete();
             }
         }
+
+        debugCompleteExecution();
     }
 
     private void executeBeforeInsert(){
@@ -311,11 +313,18 @@ public virtual class Tiger {
         }
     }
 
-    private void debugTrigger(){
+    private void debugStartExecution(){
 
         String objectContext = this.context == null ? this.sObjectName : this.sObjectName + ' in the context " ' + this.context + '"';
 
         System.debug('Executing ' + Trigger.operationType + ' trigger for ' + objectContext);
+    }
+
+    private void debugCompleteExecution(){
+
+        String objectContext = this.context == null ? this.sObjectName : this.sObjectName + ' in the context " ' + this.context + '"';
+
+        System.debug('Completed ' + Trigger.operationType + ' trigger for ' + objectContext);
     }
 
     private void execute(BeforeInsert actioner){
