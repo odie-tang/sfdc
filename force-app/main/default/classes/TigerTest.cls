@@ -14,7 +14,7 @@ public with sharing class TigerTest {
 
         for(Integer i = 0; i < totalNum; i++){
             //replace the record creation accordingly
-            Account account = new Account(Name = 'abc' + i); 
+            Account account = new Account(Name = 'abc' + i, AccountNumber = 'abc'); 
 
             accounts.add(account);
         }
@@ -23,7 +23,7 @@ public with sharing class TigerTest {
 
         for(Integer i = 0; i < totalNum; i++){
 
-            accounts[i].Name += '_update';
+            accounts[i].AccountNumber += '_update';
         }
 
         update accounts;
