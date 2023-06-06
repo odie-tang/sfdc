@@ -5,8 +5,13 @@
 */
 @isTest
 public with sharing class TigerTest {
+
+    public static Boolean testing = false;
+
     @isTest
     public static void test(){
+
+        TigerTest.testing = true;
 
         Integer totalNum = 50;
 

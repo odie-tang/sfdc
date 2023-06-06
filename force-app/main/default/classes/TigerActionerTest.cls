@@ -37,19 +37,24 @@ public with sharing class TigerActionerTest implements
     }
     public boolean inScopeBeforeUpdate(SObject newRecord){
         System.assert(Trigger.operationType == TriggerOperation.BEFORE_UPDATE);
-        System.assert(UtilTrigger.sObjectName() == 'Account');
-        System.assert(UtilTrigger.anyFieldChanged(newRecord, new String[]{'Name', 'AccountNumber'}));
-        System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber'));
-        System.assertEquals(UtilTrigger.fieldChanged(newRecord, 'Name'), false);
-        System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber', 'abc', 'abc_update'));
-        System.assert(UtilTrigger.fieldChangedFrom(newRecord, 'AccountNumber', 'abc'));
-        System.assert(UtilTrigger.fieldChangedFromAnyOldValue(newRecord, 'AccountNumber', new String[]{'abc','bcd'}));
-        System.assertEquals(UtilTrigger.fieldChangedFromAnyOldValue(newRecord, 'AccountNumber', new String[]{'bcd'}), false);
-        System.assertEquals(UtilTrigger.fieldChangedToAnyNewValue(newRecord, 'AccountNumber', new String[]{'bcd', 'a'}), false);
-        System.assert(UtilTrigger.fieldChangedToAnyNewValue(newRecord, 'AccountNumber', new String[]{'bcd', 'abc_update'}));
-        System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber', 'abc', 'abc_update'));
-        System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber', new String[]{'abc'}, new String[]{'abc_update'}));
-        System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber', 'abc', new String[]{'abc_update'}));
+
+        if(TigerTest.testing){
+
+            System.assert(UtilTrigger.sObjectName() == 'Account');
+            System.assert(UtilTrigger.anyFieldChanged(newRecord, new String[]{'Name', 'AccountNumber'}));
+            System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber'));
+            System.assertEquals(UtilTrigger.fieldChanged(newRecord, 'Name'), false);
+            System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber', 'abc', 'abc_update'));
+            System.assert(UtilTrigger.fieldChangedFrom(newRecord, 'AccountNumber', 'abc'));
+            System.assert(UtilTrigger.fieldChangedFromAnyOldValue(newRecord, 'AccountNumber', new String[]{'abc','bcd'}));
+            System.assertEquals(UtilTrigger.fieldChangedFromAnyOldValue(newRecord, 'AccountNumber', new String[]{'bcd'}), false);
+            System.assertEquals(UtilTrigger.fieldChangedToAnyNewValue(newRecord, 'AccountNumber', new String[]{'bcd', 'a'}), false);
+            System.assert(UtilTrigger.fieldChangedToAnyNewValue(newRecord, 'AccountNumber', new String[]{'bcd', 'abc_update'}));
+            System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber', 'abc', 'abc_update'));
+            System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber', new String[]{'abc'}, new String[]{'abc_update'}));
+            System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber', 'abc', new String[]{'abc_update'}));
+        }
+        
         return true;
     }
     public void processBeforeUpdate(SObject[] scope){
