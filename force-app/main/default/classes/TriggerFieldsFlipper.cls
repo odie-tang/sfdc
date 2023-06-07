@@ -44,7 +44,7 @@
  * 
  */
 public with sharing class TriggerFieldsFlipper implements 
-    Tiger.BeforeInsert, Tiger.AfterInsert, Tiger.BeforeUpdate{
+    Tiger.BeforeInsert, Tiger.AfterInsert, Tiger.BeforeUpdate, Tiger.Recursive{
 
     private static Map<Id, Set<String>> flippedMap = new Map<Id, Set<String>>();
     private static Map<SObject, Set<String>> beforeInsertFlippedMap = new Map<SObject, Set<String>>();

@@ -15,13 +15,15 @@ public with sharing class AccountTgOpportuntiesCloser implements Tiger.AfterUpda
      */
     public void processAfterUpdate(SObject[] scope){
 
-        Opportunity[] opprotunities = [SELECT Id FROM Opportunity WHERE AccountId IN :scope AND IsClosed = FALSE];
+        Opportunity[] opportunities = [SELECT Id FROM Opportunity WHERE AccountId IN :scope AND IsClosed = FALSE];
 
-        for(Opportunity opprotunity : opprotunities){
+        for(Opportunity opprotunity : opportunities){
             
             opprotunity.StageName = 'Closed Lost';
         }
 
-        update opprotunities;
+        System.debug('opportunities: ' + opportunities);
+
+        update opportunities;
     }
 }
