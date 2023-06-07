@@ -64,7 +64,7 @@ public with sharing class TriggerFieldsFlipper implements
 
         Set<String> flippedFieldNames = getFlippedFieldNames(record);
 
-        return flippedFieldNames?.contains(fieldName);
+        return flippedFieldNames?.contains(fieldName) == true;
     }
 
     private static Set<String> getFlippedFieldNames(SObject record){

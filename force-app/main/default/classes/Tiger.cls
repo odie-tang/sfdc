@@ -23,7 +23,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * 
 **/
-public virtual class Tiger {
+public class Tiger {
 
     /**
      * To track whether the Tiger instance has already been executed, to handle recursive exectuions
@@ -44,8 +44,6 @@ public virtual class Tiger {
     private Boolean allowSkipTiger = true;
     //Indicate whether the current user has the skip Tiger permission.
     private Boolean userHasSkipTigerPermission = userHasSkipTigerPermission();
-    //Indicate whether the current user does not have the required context permission. It's initialized in the Tiger's constructers with "context" parameter.
-    private Boolean userHasNoContextPermission = false;
     //Used to host the Actioners of the currently executing Trigger event.
     private List<Actioner> actioners = new List<Actioner>();
 
@@ -128,28 +126,32 @@ public virtual class Tiger {
 
     public Tiger(Actioner[] actioners){
 
-        for(Actioner actioner : actioners){
-
-            this.actioners.add(actioner);
-        }
+        this.actioners.addAll(actioners);
     }
 
     public Tiger(String[] actionerClasses, String context){
 
-        this(actionerClasses);
-
         this.context = context;
 
-        this.userHasNoContextPermission = userHasNoContextPermission();   
+        if(userHasContextPermission()){
+
+            for(String actionerClass : actionerClasses){
+
+                Actioner actioner = (Actioner)Type.forName(actionerClass).newInstance();
+    
+                this.actioners.add(actioner);
+            }
+        }
     }
 
     public Tiger(Actioner[] actioners, String context){
 
-        this(actioners);
-
         this.context = context;
 
-        this.userHasNoContextPermission = userHasNoContextPermission();
+        if(userHasContextPermission()){
+
+            this.actioners.addAll(actioners);
+        }
     }
 
     public Tiger turnOffSkipTiger(){
@@ -160,6 +162,12 @@ public virtual class Tiger {
     }
 
     public void fire(){
+
+        if(!userHasContextPermission()){
+
+            System.debug('User does not have the Custom Permission TIGER_CONTEXT_' + context + ', skipping the Trigger execution for the Context "' + context + '".');
+            return;
+        }
 
         debugStartExecution();
 
@@ -490,16 +498,16 @@ public virtual class Tiger {
             || FeatureManagement.checkPermission('SKIP_TIGER_' + this.sObjectName);
     }
 
-    private Boolean userHasNoContextPermission(){
+    private Boolean userHasContextPermission(){
         
-        return this.context != null && !FeatureManagement.checkPermission('TIGER_CONTEXT_' + this.context);
+        return this.context == null || FeatureManagement.checkPermission('TIGER_CONTEXT_' + this.context);
     }
 
     private Boolean skipActioner(Actioner actioner){
 
         return this.allowSkipTiger 
             && !(actioner instanceof NonSkipable) 
-            && (this.userHasSkipTigerPermission || this.userHasNoContextPermission || userHasSkipablePermission(actioner));
+            && (this.userHasSkipTigerPermission || userHasSkipablePermission(actioner));
     }
 
     private Boolean userHasSkipablePermission(Actioner actioner){
