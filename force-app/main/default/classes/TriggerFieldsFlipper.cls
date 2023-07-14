@@ -3,7 +3,7 @@
  * Copyright (c), odie.tang
  * 
  * Source Code: 
- * https://github.com/odie-tang/sfdc/blob/develop/base/force-app/main/default/classes/TriggerFieldsFlipper.cls
+ * https://github.com/odie-tang/sfdc/blob/master/force-app/main/default/classes/TriggerFieldsFlipper.cls
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
  * and associated documentation files (the "Software"), to deal in the Software without restriction,

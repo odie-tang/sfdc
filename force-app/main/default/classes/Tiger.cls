@@ -3,7 +3,7 @@
  * Blog: https://odietang.blogspot.com/2020/08/introduction-to-tiger.html
  * 
  * Source Code: 
- * https://github.com/odie-tang/sfdc/blob/develop/base/force-app/main/default/classes/Tiger.cls
+ * https://github.com/odie-tang/sfdc/blob/master/force-app/main/default/classes/Tiger.cls
  * 
  * Copyright (c), odie.tang
  *
