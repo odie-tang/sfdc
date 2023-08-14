@@ -21,7 +21,7 @@ public with sharing class TigerActionerTest implements
     }
     public boolean inScopeBeforeInsert(SObject newRecord){
         System.assert(Trigger.operationType == TriggerOperation.BEFORE_INSERT);
-        return true;
+        return Test.isRunningTest();
     }
     public void processBeforeInsert(SObject[] scope){
         System.assert(Trigger.operationType == TriggerOperation.BEFORE_INSERT);
@@ -29,7 +29,7 @@ public with sharing class TigerActionerTest implements
     }
     public boolean inScopeAfterInsert(SObject newRecord){
         System.assert(Trigger.operationType == TriggerOperation.AFTER_INSERT);
-        return true;
+        return Test.isRunningTest();
     }
     public void processAfterInsert(SObject[] scope){
         System.assert(Trigger.operationType == TriggerOperation.AFTER_INSERT);
@@ -55,7 +55,7 @@ public with sharing class TigerActionerTest implements
             System.assert(UtilTrigger.fieldChanged(newRecord, 'AccountNumber', 'abc', new String[]{'abc_update'}));
         }
         
-        return true;
+        return Test.isRunningTest();
     }
     public void processBeforeUpdate(SObject[] scope){
         System.assert(Trigger.operationType == TriggerOperation.BEFORE_UPDATE);
@@ -63,7 +63,7 @@ public with sharing class TigerActionerTest implements
     }
     public boolean inScopeAfterUpdate(SObject newRecord){
         System.assert(Trigger.operationType == TriggerOperation.AFTER_UPDATE);
-        return true;
+        return Test.isRunningTest();
     }
     public void processAfterUpdate(SObject[] scope){
         System.assert(Trigger.operationType == TriggerOperation.AFTER_UPDATE);
@@ -71,7 +71,7 @@ public with sharing class TigerActionerTest implements
     }
     public boolean inScopeBeforeDelete(SObject oldRecord){
         System.assert(Trigger.operationType == TriggerOperation.BEFORE_DELETE);
-        return true;
+        return Test.isRunningTest();
     }
     public void processBeforeDelete(SObject[] scope){
         System.assert(Trigger.operationType == TriggerOperation.BEFORE_DELETE);
@@ -79,7 +79,7 @@ public with sharing class TigerActionerTest implements
     }
     public boolean inScopeAfterDelete(SObject oldRecord){
         System.assert(Trigger.operationType == TriggerOperation.AFTER_DELETE);
-        return true;
+        return Test.isRunningTest();
     }
     public void processAfterDelete(SObject[] scope){
         System.assert(Trigger.operationType == TriggerOperation.AFTER_DELETE);
@@ -87,7 +87,7 @@ public with sharing class TigerActionerTest implements
     }
     public boolean inScopeAfterUndelete(SObject newRecord){
         System.assert(Trigger.operationType == TriggerOperation.AFTER_UNDELETE);
-        return true;
+        return Test.isRunningTest();
     }
     public void processAfterUndelete(SObject[] scope){
         System.assert(Trigger.operationType == TriggerOperation.AFTER_UNDELETE);
