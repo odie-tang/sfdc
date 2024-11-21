@@ -7,5 +7,5 @@ trigger Account on Account (before insert, after insert, before update, after up
         new AccountTgOpportuntiesCloser()
     };
 
-    new Tiger(actioners).fire();
+    new Tiger(actioners).run();
 }
