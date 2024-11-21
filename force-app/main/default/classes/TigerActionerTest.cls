@@ -13,7 +13,7 @@ public with sharing class TigerActionerTest implements
             ,Tiger.BeforeDelete
             ,Tiger.AfterDelete
             ,Tiger.AfterUndelete
-            ,Tiger.Recursive
+            ,Tiger.RunOnce
             ,Tiger.Skipable{
 
     public String customPermission(){
