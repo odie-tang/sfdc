@@ -1,10 +1,5 @@
 /**
  * 
- * Blog: https://odietang.blogspot.com/2020/08/introduction-to-tiger.html
- * 
- * Source Code: 
- * https://github.com/odie-tang/sfdc/blob/master/force-app/main/default/classes/Tiger.cls
- * 
  * Copyright (c), odie.tang
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software
@@ -24,65 +19,28 @@
  * 
 **/
 public class Tiger {
-
     /**
-     * To track whether the Tiger instance has already been executed, to handle recursive exectuions
-     * structure: sObjectName => TriggerOperation => Set<Context>
-     */
-    private static Map<String, Map<TriggerOperation, Set<String>>> contextsAlreadyRun = new Map<String, Map<TriggerOperation, Set<String>>>();
-    
-    //the sObject Name of the currently executing trigger
-    private String sObjectName = getSObjectName();
-    /**
-     * Use the "context" to separate the business processes on the same object. There can be multiple Tiger instances with their own context.
-     * For instance, if the context is set to "Consumer", 
-     * only the users with the Custom Permission "TIGER_CONTEXT_Consumer" will be executing the actionsers in the Tiger instance.
-     * 
-     */
-    private String context;
-    //Indicate whether the Tiger instance allows skipping via custom permissions.
-    private Boolean allowSkipTiger = true;
-    //Indicate whether the current user has the skip Tiger permission.
-    private Boolean userHasSkipTigerPermission = userHasSkipTigerPermission();
-    //Used to host the Actioners of the currently executing Trigger event.
-    private List<Actioner> actioners = new List<Actioner>();
-
-    //BeforeUpdate and AfterUpdate are not recursive by default. To make certain Update Actioners running recursively, implement this interface.
-    public interface Recursive{}
-
-    //The super interface for all Trigger Event based interfaces.
+    * The unified super interface for all event-based interfaces in this trigger framework. Pass the list of Actioners to the Tiger class's constructors.
+    */
     public interface Actioner{}
 
-    /**
-     * If an Actioner class implements this interface, no users will be able skip the execution of the class even when they have the SKIP permissions. 
-     * 
-     * It is typically used when a Data Migration or Integration user needs to skip most of the actioners with some exceptions.
-     * 
-     */
-    public interface NonSkipable{}
 
     /**
-     * If an Actioner class implements this interface, users with the Custom Permission defined in the method "customPermission()"
-     * will be able to skip the execution of the class. Add the Custom Permission to Permission Sets or Permission Set Groups and assign 
-     * to dedicated users accordingly.
+     * The 7 event-based interfaces extend the "Actioner" super interface and define two essential methods for each interface:
      * 
-     * If both NonSkipable and Skipable are implemented at the same time(should avoid that), the Skipable will be ignored.
-     */
-    public interface Skipable{
-        String customPermission();
-    }
-    /**
-     * Trigger Event based interface extends the super interface "Actioner". There are two methods for each Event based interface: 
-     * 1. The "inScope" method iterates over each record in the Trigger's context records, collect them if they are determined as "in scope".
-     * 2. The process method takes all the records that are in scope passed the "inScope" check above, and handles the logic in bulk manner.
+     * 1. **inScope Method**: Evaluates each record in the Trigger's context to determine if it is "in scope." Records that meet the criteria are collected for further processing.
+     * 2. **process Method**: Performs bulk processing for all records that passed the "inScope" check.
      * 
-     * Tips:
-     * 1. No need to manually check Trigger's event in the code and pass Trigger variables, the framework will determine in which trigger event the actioner will be executed based on the interface.
-     * 2. Focus on defining the logic to check the "scope" for each individual record, instead of iterating over the entire list of records.
-     * 3. The parameter's name of the "inScope" method indicates whether the record is from the Trigger.new or Trigger.old, e.g. "newRecord" is from the Trigger.new.
-     * 4. In the before insert/update/undelete actioners, field values can be assigned directly to the scoped records, the same as assigning values to Trigger.new records.
-     * 5. Salesforce Trigger variables(like Trigger.new, Trigger.old, Trigger.newMap, Trigger.oldMap) can still be used in any Tiger actioners.
-     * 6. Use the utility methods in the UtilTrigger for checking if a field or multiple fields have been changed.
+     * **Implementation Guidelines**:
+     * 1. There’s no need to manually check Trigger events or pass Trigger variables. The framework automatically executes the appropriate Trigger event based on the implemented interfaces.
+     * 2. Focus on implementing the logic to determine whether individual records are "in scope," rather than iterating through the entire record set.
+     * 3. Parameter names in the "inScope" method indicate the source of the record (`Trigger.new` or `Trigger.old`). For example, `newRecord` comes from `Trigger.new`.
+     * 4. An Apex class can implement multiple interfaces to handle different Trigger events simultaneously.
+     * 5. In before insert/update actioners, you can assign values directly to scoped records (similar to `Trigger.new` records). These changes will be applied before the records are saved to the database.
+     * 6. Salesforce Trigger variables (`Trigger.new`, `Trigger.old`, `Trigger.newMap`, `Trigger.oldMap`, etc.) are accessible in all Apex classes running in triggers. Avoid creating unnecessary mechanisms to pass these variables as parameters.
+     * 7. Leverage utility methods in the `UtilTrigger` class for common helper functions, such as checking whether one or more fields have changed.
+     * 8. Ensure proper execution order when constructing the list of Actioner classes.
+     * 9. Keep your trigger logic modular by having each Apex class implement the necessary interfaces and focus on a single task or responsibility.
      * 
      */
     public interface BeforeInsert extends Actioner{
@@ -113,6 +71,45 @@ public class Tiger {
         Boolean inScopeAfterUndelete(SObject newRecord);
         void processAfterUndelete(SObject[] scope);
     }
+    
+    /**
+    * Actioners that implement `RunOnce` ensure a TriggerOperation is executed only once for a specific sObject, preventing recursions.
+    */
+    public interface RunOnce{}
+
+
+
+    /**
+     * There are three ways to skip Actioners in this framework:
+     * 1. Users with the "SKIP_TIGER" custom permission will bypass all Actioners for all objects within the Tiger framework, except those implementing the `NonSkipable` interface. Use this for integration/data migration/batch execution users. 
+     * 2. Users with the "SKIP_TIGER_sObjectName" custom permission will bypass all Actioners for the specified "sObjectName," except those implementing the `NonSkipable` interface.
+     * 3. Users with custom permissions defined in Actioners that implement the `Skipable` interface can selectively skip those Actioners.
+     * 
+     * To turn off the skipability, set `allowSkipTiger` to false.
+     * 
+     */
+    public interface Skipable{
+        String customPermission();
+    }
+    public interface NonSkipable{}
+
+    private Boolean allowSkipTiger = true;
+
+
+    /**
+     * Track whether the current trigger operation has been executed for the triggering object, to handle recursive exectuions
+     */
+    private static Map<String, Set<TriggerOperation>> objectTriggerOperationsAlreadyRun = new Map<String, Set<TriggerOperation>>();
+    
+    private String sObjectName = getSObjectName();
+
+    private List<Actioner> actioners = new List<Actioner>();
+
+
+    public Tiger(Actioner[] actioners){
+
+        this.actioners.addAll(actioners);
+    }
 
     public Tiger(String[] actionerClasses){
 
@@ -124,52 +121,16 @@ public class Tiger {
         }
     }
 
-    public Tiger(Actioner[] actioners){
-
-        this.actioners.addAll(actioners);
-    }
-
-    public Tiger(String[] actionerClasses, String context){
-
-        this.context = context;
-
-        if(userHasContextPermission()){
-
-            for(String actionerClass : actionerClasses){
-
-                Actioner actioner = (Actioner)Type.forName(actionerClass).newInstance();
-    
-                this.actioners.add(actioner);
-            }
-        }
-    }
-
-    public Tiger(Actioner[] actioners, String context){
-
-        this.context = context;
-
-        if(userHasContextPermission()){
-
-            this.actioners.addAll(actioners);
-        }
-    }
-
-    public Tiger turnOffSkipTiger(){
+    public Tiger turnOffSkip(){
 
         this.allowSkipTiger = false;
 
         return this;
     }
 
-    public void fire(){
+    public void run(){
 
-        if(!userHasContextPermission()){
-
-            System.debug('User does not have the Custom Permission TIGER_CONTEXT_' + context + ', skipping the Trigger execution for the Context "' + context + '".');
-            return;
-        }
-
-        debugStartExecution();
+        System.debug('Executing ' + Trigger.operationType + ' trigger for ' + this.sObjectName);
 
         if(Trigger.isBefore){
                 
@@ -205,23 +166,36 @@ public class Tiger {
             }
         }
 
-        debugCompleteExecution();
+        System.debug('Completed ' + Trigger.operationType + ' trigger for ' + this.sObjectName);
     }
 
     private void executeBeforeInsert(){
 
-        for(Actioner actioner : this.actioners){
-            
-            if((actioner instanceof BeforeInsert) && !skipActioner(actioner)){
+        if(alreadyRun()){
 
-                execute((BeforeInsert)actioner);
+            for(Actioner actioner : this.actioners){
+                
+                if((actioner instanceof BeforeInsert) && isReExecutable(actioner)){
+
+                    execute((BeforeInsert)actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun();
+
+            for(Actioner actioner : this.actioners){
+                
+                if((actioner instanceof BeforeInsert) && !skipActioner(actioner)){
+
+                    execute((BeforeInsert)actioner);
+                }
             }
         }
     }
+
     
-    /*
-    * Only the "update" actioners are supported in the de-recursion mechnism
-    */
     private void executeBeforeUpdate(){
 
         if(alreadyRun()){
@@ -250,29 +224,56 @@ public class Tiger {
 
     private void executeBeforeDelete(){
 
-        for(Actioner actioner : this.actioners){
-            
-            if((actioner instanceof BeforeDelete) && !skipActioner(actioner)){
+        if(alreadyRun()){
 
-                execute((BeforeDelete)actioner);
+            for(Actioner actioner : this.actioners){
+                
+                if((actioner instanceof BeforeDelete) && isReExecutable(actioner)){
+
+                    execute((BeforeDelete)actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun();
+
+            for(Actioner actioner : this.actioners){
+                
+                if((actioner instanceof BeforeDelete) && !skipActioner(actioner)){
+
+                    execute((BeforeDelete)actioner);
+                }
             }
         }
     }
     
     private void executeAfterInsert(){
 
-        for(Actioner actioner : this.actioners){
-            
-            if((actioner instanceof AfterInsert) && !skipActioner(actioner)){
+        if(alreadyRun()){
 
-                execute((AfterInsert)actioner);
+            for(Actioner actioner : this.actioners){
+                
+                if((actioner instanceof AfterInsert) && isReExecutable(actioner)){
+
+                    execute((AfterInsert)actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun();
+
+            for(Actioner actioner : this.actioners){
+                
+                if((actioner instanceof AfterInsert) && !skipActioner(actioner)){
+
+                    execute((AfterInsert)actioner);
+                }
             }
         }
     }
-    
-    /*
-    * Only the "update" actioners are supported in the de-recursion mechnism
-    */
+  
     private void executeAfterUpdate(){
         
         if(alreadyRun()){
@@ -301,38 +302,54 @@ public class Tiger {
     
     private void executeAfterDelete(){
         
-        for(Actioner actioner : this.actioners){
-                
-            if((actioner instanceof AfterDelete) && !skipActioner(actioner)){
+        if(alreadyRun()){
 
-                execute((AfterDelete)actioner);
+            for(Actioner actioner : this.actioners){
+                
+                if((actioner instanceof AfterDelete) && isReExecutable(actioner)){
+
+                    execute((AfterDelete)actioner);
+                }
+            }
+        }
+        else{
+
+            markAlreadyRun();
+
+            for(Actioner actioner : this.actioners){
+                
+                if((actioner instanceof AfterDelete) && !skipActioner(actioner)){
+
+                    execute((AfterDelete)actioner);
+                }
             }
         }
     }
 
     private void executeAfterUndelete(){
         
-        for(Actioner actioner : this.actioners){
-                
-            if((actioner instanceof AfterUndelete) && !skipActioner(actioner)){
+        if(alreadyRun()){
 
-                execute((AfterUndelete)actioner);
+            for(Actioner actioner : this.actioners){
+                
+                if((actioner instanceof AfterUndelete) && isReExecutable(actioner)){
+
+                    execute((AfterUndelete)actioner);
+                }
             }
         }
-    }
+        else{
 
-    private void debugStartExecution(){
+            markAlreadyRun();
 
-        String objectContext = this.context == null ? this.sObjectName : this.sObjectName + ' in the context of " ' + this.context + '"';
+            for(Actioner actioner : this.actioners){
+                
+                if((actioner instanceof AfterUndelete) && !skipActioner(actioner)){
 
-        System.debug('Executing ' + Trigger.operationType + ' trigger for ' + objectContext);
-    }
-
-    private void debugCompleteExecution(){
-
-        String objectContext = this.context == null ? this.sObjectName : this.sObjectName + ' in the context of " ' + this.context + '"';
-
-        System.debug('Completed ' + Trigger.operationType + ' trigger for ' + objectContext);
+                    execute((AfterUndelete)actioner);
+                }
+            }
+        }
     }
 
     private void execute(BeforeInsert actioner){
@@ -463,54 +480,42 @@ public class Tiger {
 
     private Boolean isReExecutable(Actioner actioner){
 
-        return (actioner instanceof Recursive) && !skipActioner(actioner);
+        return !(actioner instanceof RunOnce) && !skipActioner(actioner);
     }
 
     private Boolean alreadyRun(){
 
-        return contextsAlreadyRun.get(this.sObjectName)?.get(Trigger.operationType)?.contains(this.context) == true;
+        return objectTriggerOperationsAlreadyRun.get(this.sObjectName)?.contains(Trigger.operationType) == true;
     }
 
     private void markAlreadyRun(){
 
-        Map<TriggerOperation, Set<String>> triggerOperationContexts = contextsAlreadyRun.get(this.sObjectName);
+        Set<TriggerOperation> triggerOperationsAlreadyRun = objectTriggerOperationsAlreadyRun.get(this.sObjectName);
 
-        if(triggerOperationContexts == null){
+        if(triggerOperationsAlreadyRun == null){
 
-            triggerOperationContexts = new Map<TriggerOperation, Set<String>>();
+            triggerOperationsAlreadyRun = new Set<TriggerOperation>();
 
-            contextsAlreadyRun.put(this.sObjectName, triggerOperationContexts);
+            objectTriggerOperationsAlreadyRun.put(this.sObjectName, triggerOperationsAlreadyRun);
         }
 
-        Set<String> contexts = triggerOperationContexts.get(Trigger.operationType);
-
-        if(contexts == null){
-            contexts = new Set<String>();
-            triggerOperationContexts.put(Trigger.operationType, contexts);
-        }
-
-        contexts.add(this.context);
-    }
-
-    private Boolean userHasSkipTigerPermission(){
-
-        return FeatureManagement.checkPermission('SKIP_TIGER') 
-            || FeatureManagement.checkPermission('SKIP_TIGER_' + this.sObjectName);
-    }
-
-    private Boolean userHasContextPermission(){
-        
-        return this.context == null || FeatureManagement.checkPermission('TIGER_CONTEXT_' + this.context);
+        triggerOperationsAlreadyRun.add(Trigger.operationType);
     }
 
     private Boolean skipActioner(Actioner actioner){
 
         return this.allowSkipTiger 
             && !(actioner instanceof NonSkipable) 
-            && (this.userHasSkipTigerPermission || userHasSkipablePermission(actioner));
+            && (this.userHasPermissionToSkipTigerActioners() || userHasPermissionToSkipActioner(actioner));
     }
 
-    private Boolean userHasSkipablePermission(Actioner actioner){
+    private Boolean userHasPermissionToSkipTigerActioners(){
+
+        return FeatureManagement.checkPermission('SKIP_TIGER') 
+            || FeatureManagement.checkPermission('SKIP_TIGER_' + this.sObjectName);
+    }
+
+    private Boolean userHasPermissionToSkipActioner(Actioner actioner){
 
         if(actioner instanceof Skipable){
 
